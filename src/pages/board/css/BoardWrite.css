@@ -1,0 +1,225 @@
+/* BoardWrite.css */
+/* 상태 문구 (로딩/에러) 재사용 */
+
+.board-write-state-text {
+  font-size: 0.9rem;
+  color: var(--ff-text-muted);
+}
+
+.board-write-state-error {
+  color: #c0392b;
+}
+
+.board-write-page {
+  max-width: 880px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+/* 로그인 필요 메시지 */
+
+.board-write-alert {
+  font-size: 0.9rem;
+  color: #c0392b;
+}
+
+/* 헤더 */
+
+.board-write-header {
+  padding-bottom: 0.9rem;
+  border-bottom: 1px solid var(--ff-border-subtle);
+}
+
+.board-write-header h1 {
+  margin: 0 0 0.35rem;
+  font-size: 1.35rem;
+  color: var(--ff-text);
+}
+
+.board-write-sub {
+  margin: 0;
+  font-size: 0.92rem;
+  color: var(--ff-text-muted);
+}
+
+/* 메인 박스 */
+
+.board-write-box {
+  margin-top: 0.4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+/* 폼 구조 */
+
+.board-form-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: flex-end;
+}
+
+.board-form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  min-width: 180px;
+}
+
+.board-form-field.flex-1 {
+  flex: 1;
+}
+
+.board-form-field-body {
+  margin-top: 0.4rem;
+}
+
+.board-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--ff-text-muted);
+}
+
+/* 공용 인풋/셀렉트 스타일 (다른 페이지에서도 사용 가능) */
+
+.board-input,
+.board-select {
+  /* width: 100%; */
+  padding: 0.5rem 0.6rem;
+  border-radius: 0.55rem;
+  border: 1px solid var(--ff-border-subtle);
+  background: #fffdf9;
+  font-size: 0.86rem;
+  font-family: inherit;
+  outline: none;
+}
+
+.board-input:focus,
+.board-select:focus {
+  border-color: rgba(255, 140, 140, 0.7);
+  box-shadow: 0 0 0 1px rgba(255, 140, 140, 0.15);
+}
+
+/* 에디터 영역 */
+
+.board-editor-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.board-editor-hint {
+  font-size: 0.78rem;
+  color: var(--ff-text-muted);
+}
+
+/* 가짜 에디터 툴바 */
+
+.board-editor-toolbar {
+  margin-top: 0.35rem;
+  margin-bottom: 0.35rem;
+  padding: 0.25rem 0.3rem;
+  border-radius: 0.55rem;
+  border: 1px solid var(--ff-border-subtle);
+  background: #fffaf3;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.78rem;
+}
+
+.toolbar-btn,
+.toolbar-btn-sm {
+  border: none;
+  background: transparent;
+  padding: 0.18rem 0.4rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  cursor: default;
+  color: var(--ff-text-muted);
+}
+
+.toolbar-btn {
+  font-weight: 700;
+}
+
+.toolbar-btn-sm {
+  font-size: 0.76rem;
+}
+
+.toolbar-divider {
+  width: 1px;
+  height: 16px;
+  background: rgba(0, 0, 0, 0.06);
+  margin: 0 0.1rem;
+}
+
+/* 텍스트 영역 */
+
+.board-textarea {
+  /* width: 100%; */
+  resize: vertical;
+  min-height: 220px;
+  padding: 0.65rem 0.7rem;
+  border-radius: 0.75rem;
+  border: 1px solid var(--ff-border-subtle);
+  background: #fffdf9;
+  font-size: 0.88rem;
+  font-family: inherit;
+  outline: none;
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+
+.board-textarea:focus {
+  border-color: rgba(255, 140, 140, 0.7);
+  box-shadow: 0 0 0 1px rgba(255, 140, 140, 0.15);
+}
+
+/* 글자 수 */
+
+.board-editor-footer {
+  margin-top: 0.25rem;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.board-editor-count {
+  font-size: 0.78rem;
+  color: var(--ff-text-muted);
+}
+
+/* 하단 버튼들 */
+
+.board-write-actions {
+  margin-top: 0.4rem;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.45rem;
+}
+
+/* 반응형 */
+
+@media (max-width: 640px) {
+  .board-form-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .board-form-field {
+    width: 100%;
+  }
+
+  .board-write-actions {
+    flex-direction: column-reverse;
+  }
+
+  .board-write-actions .primary-btn,
+  .board-write-actions .secondary-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}

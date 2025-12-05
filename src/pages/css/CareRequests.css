@@ -1,0 +1,208 @@
+/* CareRequests.css */
+
+.care-requests-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.3rem;
+}
+
+/* 상태 뷰 공통 */
+
+.care-requests-state {
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  min-height: 200px;
+}
+
+.care-requests-state-text {
+  font-size: 0.9rem;
+  color: var(--ff-text-muted);
+}
+
+.care-requests-state-error {
+  color: #c0392b;
+}
+
+/* 헤더 */
+
+.care-requests-header {
+  padding-bottom: 0.8rem;
+  border-bottom: 1px solid var(--ff-border-subtle);
+}
+
+.care-requests-header h1 {
+  margin: 0 0 0.3rem;
+  font-size: 1.35rem;
+  color: var(--ff-text);
+}
+
+.care-requests-sub {
+  margin: 0;
+  font-size: 0.92rem;
+  color: var(--ff-text-muted);
+}
+
+/* 비어 있을 때 */
+
+.care-requests-empty {
+  margin: 0.6rem 0 0;
+  font-size: 0.88rem;
+  color: var(--ff-text-muted);
+}
+
+/* 리스트 / 아이템 */
+
+.care-requests-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+.care-requests-item {
+  padding: 0.75rem 0.8rem;
+  border-radius: 0.85rem;
+  background: #fffdf9;
+  border: 1px solid rgba(240, 227, 214, 0.9);
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  box-shadow: 0 12px 24px rgba(203, 152, 116, 0.1);
+}
+
+/* 상단 영역 */
+
+.care-requests-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.7rem;
+}
+
+.care-requests-item-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--ff-text);
+}
+
+.care-requests-item-sub {
+  font-size: 0.82rem;
+  color: var(--ff-text-muted);
+}
+
+/* 상태 뱃지 */
+
+.care-status-badge {
+  font-size: 0.78rem;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  white-space: nowrap;
+}
+
+.care-status-requested {
+  background: rgba(255, 140, 140, 0.1);
+  border-color: rgba(255, 140, 140, 0.5);
+  color: var(--ff-primary);
+}
+
+.care-status-accepted {
+  background: #e9f8ef;
+  border-color: #b7e1c7;
+  color: #2e7a4f;
+}
+
+.care-status-rejected {
+  background: #ffe5e5;
+  border-color: #f6b7b7;
+  color: #b33;
+}
+
+.care-status-cancelled_by_user {
+  background: #fff4da;
+  border-color: #f2d39a;
+  color: #a56a1e;
+}
+
+/* 본문 */
+
+.care-requests-item-body {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.4rem 0.8rem;
+}
+
+.care-requests-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  font-size: 0.84rem;
+}
+
+.care-requests-row .label {
+  font-size: 0.78rem;
+  color: var(--ff-text-muted);
+}
+
+/* 푸터 / 버튼 */
+
+.care-requests-item-footer {
+  margin-top: 0.3rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.care-requests-actions {
+  display: flex;
+  gap: 0.4rem;
+}
+
+/* small-btn, primary-btn, secondary-btn 은 공통 스타일 재사용 */
+
+.small-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25rem 0.7rem;
+  border-radius: 999px;
+  border: 1px solid rgba(233, 222, 209, 0.9);
+  background: #ffffff;
+  font-size: 0.8rem;
+  cursor: pointer;
+  color: var(--ff-text);
+  transition:
+    background-color 0.14s ease,
+    border-color 0.14s ease,
+    color 0.14s ease,
+    box-shadow 0.14s ease,
+    transform 0.08s ease;
+}
+
+.small-btn:hover {
+  background-color: rgba(255, 140, 140, 0.06);
+  border-color: rgba(255, 140, 140, 0.6);
+}
+
+/* 반응형 */
+
+@media (max-width: 768px) {
+  .care-requests-item-body {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .care-requests-item-footer {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .care-requests-actions {
+    justify-content: flex-end;
+  }
+
+  .care-requests-actions .primary-btn,
+  .care-requests-actions .secondary-btn {
+    flex: 1;
+  }
+}

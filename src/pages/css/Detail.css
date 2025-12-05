@@ -1,0 +1,303 @@
+/* Detail.css */
+
+.detail-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.4rem;
+}
+
+/* 로딩/에러 상태 */
+.detail-state {
+  align-items: center;
+  justify-content: center;
+}
+
+.detail-state-text {
+  font-size: 0.9rem;
+  color: var(--ff-text-muted);
+}
+
+.detail-state-error {
+  color: #c0392b;
+}
+
+.detail-back-link {
+  margin-top: 0.6rem;
+  font-size: 0.85rem;
+  color: var(--ff-primary);
+  text-decoration: none;
+}
+
+/* ===== 상단 프로필 영역 ===== */
+
+.detail-top {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+/* 사진 */
+.detail-photo-wrap {
+  border-radius: 1rem;
+  overflow: hidden;
+  border: 1px solid #f1f4f3;
+  background: #fafafa;
+}
+
+.detail-photo {
+  width: 100%;
+  max-height: 260px;
+  object-fit: cover;
+  display: block;
+}
+
+/* 헤더 */
+.detail-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.detail-header-main h1 {
+  margin: 0 0 0.2rem;
+  font-size: 1.35rem;
+  color: var(--ff-text);
+}
+
+.detail-location {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--ff-text-muted);
+}
+
+.detail-rating {
+  margin: 0.3rem 0 0;
+  font-size: 0.85rem;
+  color: var(--ff-text);
+}
+
+/* 오른쪽 메타 */
+.detail-header-side {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  align-items: flex-end;
+  text-align: right;
+}
+
+.detail-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid var(--ff-border-subtle);
+  color: var(--ff-text-muted);
+}
+
+.detail-price-pill {
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--ff-primary);
+}
+
+/* 동물 태그 */
+.detail-animals {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.detail-tag {
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  background: rgba(247, 240, 231, 0.95);
+  color: var(--ff-text);
+}
+
+/* ===== 공통 박스/그리드 ===== */
+
+.detail-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1.1fr);
+  gap: 0.9rem;
+}
+
+.detail-grid-full {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+}
+
+.detail-box {
+  padding: 1rem 0.95rem 1.05rem;
+  border-radius: 0.95rem;
+  background: #ffffff;
+  border: 1px solid rgba(240, 227, 214, 0.9);
+  box-shadow: 0 10px 24px rgba(203, 152, 116, 0.12);
+}
+
+.detail-box h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1rem;
+  color: var(--ff-text);
+}
+
+.detail-long-text {
+  margin: 0 0 0.4rem;
+  font-size: 0.9rem;
+  color: var(--ff-text);
+  white-space: pre-line;
+}
+
+.detail-label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--ff-text-muted);
+}
+
+/* ===== 요금 박스 ===== */
+
+.detail-price-box {
+  margin-top: 0.2rem;
+}
+
+.detail-price-main {
+  margin: 0.2rem 0 0.4rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--ff-primary);
+}
+
+.detail-notice {
+  margin: 0;
+  font-size: 0.83rem;
+  color: var(--ff-text-muted);
+}
+
+/* ===== 후기 박스 ===== */
+
+.detail-review-box {
+  margin-top: 0.1rem;
+}
+
+.detail-review-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+}
+
+.detail-review-count {
+  font-size: 0.8rem;
+  color: var(--ff-text-muted);
+}
+
+.detail-review-list {
+  margin-top: 0.4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.review-card {
+  padding: 0.6rem 0.65rem;
+  border-radius: 0.7rem;
+  background: #fffdf9;
+  border: 1px solid rgba(240, 227, 214, 0.9);
+}
+
+.review-rating {
+  margin: 0 0 0.2rem;
+  font-size: 0.82rem;
+}
+
+.review-content {
+  margin: 0;
+  font-size: 0.86rem;
+  color: #444;
+  white-space: pre-line;
+}
+
+.review-date {
+  margin: 0.3rem 0 0;
+  font-size: 0.78rem;
+  color: var(--ff-text-muted);
+}
+
+/* ===== 하단 버튼 영역 ===== */
+
+.detail-footer {
+  margin-top: 0.4rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.detail-secondary-link {
+  font-size: 0.85rem;
+  color: var(--ff-text-muted);
+  text-decoration: none;
+}
+
+.detail-secondary-link:hover {
+  text-decoration: underline;
+}
+
+/* 예약 버튼 (앱 공통 톤 맞춤) */
+.reserve-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.65rem 1.5rem;
+  border-radius: 999px;
+  border: none;
+  background-color: var(--ff-primary);
+  color: #ffffff;
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  box-shadow: 0 10px 22px rgba(255, 140, 140, 0.35);
+  transition:
+    background-color 0.16s ease,
+    transform 0.08s ease,
+    box-shadow 0.16s ease;
+}
+
+.reserve-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 26px rgba(255, 140, 140, 0.4);
+}
+
+/* ===== 반응형 ===== */
+
+@media (max-width: 900px) {
+  .detail-grid,
+  .detail-grid-full {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .detail-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .detail-header-side {
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .detail-footer {
+    flex-direction: column-reverse;
+    align-items: stretch;
+  }
+
+  .reserve-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}

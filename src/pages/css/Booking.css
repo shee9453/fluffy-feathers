@@ -1,0 +1,262 @@
+/* Booking.css */
+
+.booking-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.4rem;
+}
+
+/* 상태 뷰 */
+.booking-state {
+  align-items: center;
+  justify-content: center;
+}
+
+.booking-state-text {
+  font-size: 0.9rem;
+  color: var(--ff-text-muted);
+}
+
+.booking-state-error {
+  color: #c0392b;
+}
+
+/* ===== 헤더 ===== */
+
+.booking-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  padding-bottom: 0.8rem;
+  border-bottom: 1px solid var(--ff-border-subtle);
+}
+
+.booking-header-text h1 {
+  margin: 0 0 0.3rem;
+  font-size: 1.35rem;
+  color: var(--ff-text);
+}
+
+.booking-sub {
+  margin: 0;
+  font-size: 0.92rem;
+  color: var(--ff-text-muted);
+}
+
+.booking-name {
+  font-weight: 600;
+  color: var(--ff-primary);
+}
+
+/* 요약 카드 */
+.booking-summary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.7rem;
+  padding: 0.8rem 0.9rem;
+  border-radius: 0.9rem;
+  background: #ffffff;
+  border: 1px solid rgba(240, 227, 214, 0.9);
+  box-shadow: 0 8px 18px rgba(203, 152, 116, 0.1);
+  max-width: 100%;
+}
+
+.booking-summary-item {
+  margin: 0;
+  font-size: 0.88rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.booking-summary-item .label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--ff-text-muted);
+}
+
+/* ===== 폼 ===== */
+
+.booking-form {
+  margin-top: 0.4rem;
+}
+
+.booking-form-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(0, 1.3fr) minmax(0, 1.1fr);
+  gap: 1rem;
+}
+
+.form-section {
+  padding: 1rem 0.95rem 1.05rem;
+  border-radius: 0.95rem;
+  background: #ffffff;
+  border: 1px solid rgba(240, 227, 214, 0.9);
+  box-shadow: 0 10px 24px rgba(203, 152, 116, 0.12);
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.form-section-title {
+  margin: 0 0 0.2rem;
+  font-size: 1rem;
+  color: var(--ff-text);
+}
+
+/* 폼 인풋/텍스트영역 */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.form-group label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--ff-text-muted);
+}
+
+.booking-input,
+.booking-textarea {
+  /* width: 100%; */
+  padding: 0.45rem 0.75rem;
+  font-size: 0.9rem;
+  border-radius: 0.6rem;
+  border: 1px solid rgba(233, 222, 209, 0.9);
+  background: #ffffff;
+  outline: none;
+  transition:
+    border-color 0.16s ease,
+    box-shadow 0.16s ease,
+    background-color 0.16s ease;
+}
+
+.booking-input:focus,
+.booking-textarea:focus {
+  border-color: var(--ff-primary);
+  box-shadow: 0 0 0 1px rgba(255, 140, 140, 0.18);
+}
+
+.booking-textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+/* 에러 */
+.booking-error {
+  margin: 0.2rem 0 0.4rem;
+  font-size: 0.83rem;
+  color: #c0392b;
+}
+
+/* 공지 */
+.booking-notice {
+  margin: 0.6rem 0 0;
+  font-size: 0.82rem;
+  color: var(--ff-text-muted);
+}
+
+/* 예약 버튼 재사용 (Detail.css 에 있는 것과 동일하게 쓰거나 살짝 변경 가능) */
+.reserve-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.65rem 1.5rem;
+  border-radius: 999px;
+  border: none;
+  background-color: var(--ff-primary);
+  color: #ffffff;
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  box-shadow: 0 10px 22px rgba(255, 140, 140, 0.35);
+  transition:
+    background-color 0.16s ease,
+    transform 0.08s ease,
+    box-shadow 0.16s ease;
+}
+
+.reserve-btn:hover:enabled {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 26px rgba(255, 140, 140, 0.4);
+}
+
+.reserve-btn:disabled {
+  opacity: 0.7;
+  cursor: default;
+}
+
+.reserve-btn.full-width {
+  width: 100%;
+}
+
+/* ===== 모달 ===== */
+
+.booking-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.booking-modal {
+  background: #ffffff;
+  border-radius: 1rem;
+  padding: 1.3rem 1.2rem 1.1rem;
+  width: 90%;
+  max-width: 360px;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.18);
+  text-align: center;
+  border: 1px solid var(--ff-border-subtle);
+}
+
+.booking-modal-title {
+  margin: 0 0 0.4rem;
+  font-size: 1.05rem;
+  color: var(--ff-text);
+}
+
+.booking-modal-text {
+  margin: 0 0 0.9rem;
+  font-size: 0.9rem;
+  color: #555;
+  line-height: 1.6;
+}
+
+.booking-modal-btn {
+  margin-top: 0.2rem;
+}
+
+/* primary-btn 은 Home.css 등에서 이미 정의되어 있지만, 혹시 없으면 여기서 정의해도 됨 */
+/* 
+.primary-btn {
+  ...
+}
+*/
+
+/* ===== 반응형 ===== */
+
+@media (max-width: 1024px) {
+  .booking-summary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .booking-form-grid {
+    grid-template-columns: minmax(0, 1.3fr) minmax(0, 1.3fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .booking-summary {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .booking-form-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

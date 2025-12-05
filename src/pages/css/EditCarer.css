@@ -1,0 +1,28 @@
+/* EditCarer.css */
+
+.edit-carer-state-text {
+  padding: 16px;
+  font-size: 0.9rem;
+  color: var(--ff-text-muted);
+}
+
+.edit-carer-state-error {
+  color: #c0392b;
+}
+
+.edit-carer-sub {
+  margin-top: 0.25rem;
+  font-size: 0.9rem;
+  color: var(--ff-text-muted);
+}
+
+/* 현재 프로필 이미지 */
+
+.edit-carer-current-photo {
+  width: 120px;
+  height: 120px;
+  border-radius: 16px;
+  object-fit: cover;
+  border: 1px solid #e2f0ea;
+  background: #fafafa;
+}

@@ -1,0 +1,124 @@
+/* BoardList.css */
+
+.board-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+/* 상단 헤더 여백만 살짝 조정 */
+
+.board-header {
+  padding-bottom: 0.8rem;
+}
+
+/* 상단 바: 카테고리 탭 + 글쓰기 */
+
+.board-top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.1rem;
+  flex-wrap: wrap;
+}
+
+.board-category-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  padding: 0;
+  background: transparent;
+  border: none;
+}
+
+.board-write-wrap {
+  flex-shrink: 0;
+}
+
+/* 카드 그리드 (List 공통 grid 재사용) */
+
+.board-card-grid {
+  /* 필요하면 여기서 board 전용 spacing 조정 가능 */
+}
+
+/* 카드 링크 */
+
+.board-card-link {
+  text-decoration: none;
+}
+
+/* 게시판 카드 */
+
+.board-card {
+  min-height: 130px;
+}
+
+/* 상단: 제목 + 카테고리 뱃지 */
+
+.board-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.5rem;
+  margin-bottom: 0.3rem;
+}
+
+.board-card-title {
+  font-size: 0.95rem;
+  margin: 0;
+  color: #2f3f36;
+  line-height: 1.5;
+}
+
+.board-card-category {
+  font-size: 0.72rem;
+  padding: 0.25rem 0.55rem;
+  border-radius: 999px;
+  background: #f1f7f5;
+  color: #2f594b;
+  white-space: nowrap;
+}
+
+/* 본문 요약 */
+
+.board-card-excerpt {
+  font-size: 0.8rem;
+  color: #555;
+  margin: 0.25rem 0 0.5rem;
+  line-height: 1.5;
+}
+
+/* 작성일 */
+
+.board-card-date {
+  font-size: 0.72rem;
+  color: #999;
+  margin: 0;
+  margin-top: auto;
+}
+
+/* 상태 문구 */
+
+.board-notice {
+  margin-top: 0.4rem;
+  font-size: 0.86rem;
+}
+
+.board-notice-error {
+  color: #c0392b;
+}
+
+/* 반응형 */
+
+@media (max-width: 768px) {
+  .board-top-bar {
+    align-items: flex-start;
+  }
+
+  .board-write-wrap {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+  }
+}

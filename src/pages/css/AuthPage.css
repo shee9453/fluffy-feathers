@@ -1,0 +1,148 @@
+/* AuthPage.css */
+
+.auth-page {
+  max-width: 480px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+}
+
+.auth-card {
+  width: 100%;
+  padding: 1.4rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+/* 상단 토글 */
+
+.auth-toggle {
+  display: inline-flex;
+  padding: 0.2rem;
+  border-radius: 999px;
+  background: #fff4ea;
+  border: 1px solid rgba(240, 210, 188, 0.9);
+  margin-bottom: 0.4rem;
+}
+
+.auth-toggle-btn {
+  border: none;
+  background: transparent;
+  padding: 0.3rem 0.9rem;
+  border-radius: 999px;
+  font-size: 0.86rem;
+  cursor: pointer;
+  color: var(--ff-text-muted);
+  transition: background 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.auth-toggle-active {
+  background: #ffefe0;
+  color: #c45a33;
+  box-shadow: 0 4px 10px rgba(210, 140, 90, 0.25);
+}
+
+/* 타이틀/설명 */
+
+.auth-title {
+  margin: 0;
+  font-size: 1.25rem;
+  color: var(--ff-text);
+}
+
+.auth-description {
+  margin: 0.3rem 0 0;
+  font-size: 0.9rem;
+  color: var(--ff-text-muted);
+}
+
+.auth-subtitle {
+  margin: 0;
+  font-size: 0.86rem;
+  color: var(--ff-text-muted);
+}
+
+/* 에러 메시지 */
+
+.auth-error {
+  margin: 0.2rem 0 0.2rem;
+  font-size: 0.8rem;
+  color: #c0392b;
+}
+
+/* 폼 요소 */
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.85rem;
+}
+
+.form-group label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--ff-text-muted);
+}
+
+.form-group input {
+  padding: 0.5rem 0.6rem;
+  border-radius: 0.55rem;
+  border: 1px solid var(--ff-border-subtle);
+  background: #fffdf9;
+  font-size: 0.86rem;
+  font-family: inherit;
+  outline: none;
+}
+
+.form-group input:focus {
+  border-color: rgba(255, 140, 140, 0.7);
+  box-shadow: 0 0 0 1px rgba(255, 140, 140, 0.15);
+}
+
+/* 간격 조절용 */
+
+.form-group-spaced {
+  margin-top: 0.4rem;
+}
+
+/* 가로 배치되는 필드 (성별/나이) */
+
+.form-group-row {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.form-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.form-col-small {
+  max-width: 110px;
+}
+
+/* 제출 버튼 영역 */
+
+.auth-submit-wrap {
+  margin-top: 0.9rem;
+}
+
+/* 반응형 */
+
+@media (max-width: 480px) {
+  .auth-card {
+    padding: 1.2rem 1.1rem;
+  }
+
+  .form-group-row {
+    flex-direction: column;
+  }
+
+  .form-col-small {
+    max-width: 100%;
+  }
+}

@@ -1,0 +1,164 @@
+/* App.css */
+
+/* 🎨 컬러 토큰 (필요하면 나중에 더 추가하자) */
+:root {
+  --ff-bg: #fff5e9;
+  --ff-surface: #ffffff;
+  --ff-surface-soft: #fff8f0;
+  --ff-primary: #ff8c8c;
+  --ff-primary-soft: rgba(255, 140, 140, 0.12);
+  --ff-text: #333333;
+  --ff-text-muted: #777777;
+  --ff-border-subtle: #f0e3d6;
+}
+
+/* 전체 레이아웃 기본 */
+.layout {
+  min-height: 100vh;
+  background: radial-gradient(circle at top left, #ffe4c7 0, transparent 55%),
+    radial-gradient(circle at bottom right, #ffd3e0 0, transparent 50%),
+    var(--ff-bg);
+}
+
+/* 네비게이션 바 */
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  backdrop-filter: blur(12px);
+  background: rgba(255, 245, 233, 0.9);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.7);
+  box-shadow: 0 8px 20px rgba(203, 152, 116, 0.08);
+}
+
+.nav-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0.75rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+
+/* 로고 */
+.logo {
+  font-weight: 800;
+  font-size: 1.35rem;
+  letter-spacing: 0.04em;
+  color: var(--ff-text);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  padding: 0.3rem 0.6rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.8);
+  box-shadow: 0 4px 12px rgba(203, 152, 116, 0.15);
+}
+
+.logo span {
+  font-size: 0.95rem;
+  color: var(--ff-primary);
+  transform: translateY(-1px);
+}
+
+/* 메뉴 영역 */
+.menu {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.menu-item {
+  border: none;
+  outline: none;
+  background: transparent;
+  cursor: pointer;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0.45rem 0.85rem;
+  border-radius: 999px;
+  font-size: 0.92rem;
+  font-weight: 500;
+  text-decoration: none;
+  color: var(--ff-text-muted);
+  transition:
+    background-color 0.18s ease,
+    color 0.18s ease,
+    box-shadow 0.18s ease,
+    transform 0.08s ease;
+}
+
+/* NavLink active 스타일 */
+.menu-item.active {
+  background-color: var(--ff-primary);
+  color: #ffffff;
+  box-shadow: 0 6px 14px rgba(255, 140, 140, 0.35);
+}
+
+/* hover / focus */
+.menu-item:hover {
+  background-color: var(--ff-primary-soft);
+  color: var(--ff-text);
+  transform: translateY(-1px);
+}
+
+.menu-item:active {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+/* 메인 컨텐츠 */
+.content {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 1.5rem 1.5rem 2.5rem;
+}
+
+.content-inner {
+  background: var(--ff-surface);
+  border-radius: 1.25rem;
+  box-shadow: 0 16px 40px rgba(203, 152, 116, 0.1);
+  padding: 1.6rem 1.6rem 2rem;
+  border: 1px solid var(--ff-border-subtle);
+  min-height: calc(100vh - 80px);
+}
+
+/* 반응형 */
+@media (max-width: 768px) {
+  .nav-inner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+  }
+
+  .logo {
+    font-size: 1.15rem;
+    padding: 0.25rem 0.65rem;
+  }
+
+  .menu {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .menu-item {
+    padding: 0.35rem 0.75rem;
+    font-size: 0.85rem;
+  }
+
+  .content {
+    padding: 1rem;
+  }
+
+  .content-inner {
+    padding: 1.1rem 1.1rem 1.6rem;
+    border-radius: 1rem;
+  }
+}

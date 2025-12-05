@@ -1,0 +1,342 @@
+/* List.css */
+
+.list-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* 로딩/에러 상태 */
+.list-state {
+  align-items: center;
+  justify-content: center;
+}
+
+.list-state-text {
+  font-size: 0.9rem;
+  color: var(--ff-text-muted);
+}
+
+.list-state-error {
+  color: #c0392b;
+}
+
+/* ===== 헤더 ===== */
+
+.list-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-bottom: 0.8rem;
+  border-bottom: 1px solid var(--ff-border-subtle);
+}
+
+.list-header-text h1 {
+  margin: 0 0 0.4rem;
+  font-size: 1.4rem;
+  color: var(--ff-text);
+}
+
+.list-header-text p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--ff-text-muted);
+}
+
+.list-header-meta {
+  flex-shrink: 0;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  background: rgba(255, 140, 140, 0.1);
+  color: var(--ff-primary);
+}
+
+/* ===== 필터 바 ===== */
+
+.filter-bar {
+  margin-top: 0.5rem;
+  padding: 1rem 1rem 1.1rem;
+  border-radius: 0.9rem;
+  background: var(--ff-surface-soft);
+  border: 1px solid var(--ff-border-subtle);
+  display: grid;
+  grid-template-columns: 2fr 1.6fr;
+  gap: 0.9rem 1.2rem;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.filter-group-wide {
+  grid-column: 1 / -1;
+}
+
+.filter-group-full {
+  grid-column: 1 / -1;
+}
+
+.filter-group-row {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: minmax(0, 1.7fr) minmax(0, 1.2fr);
+  gap: 0.8rem;
+}
+
+.filter-subgroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+/* 라벨 */
+.filter-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--ff-text-muted);
+}
+
+/* 인풋/셀렉트 */
+.filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.filter-input,
+.select {
+  width: 100%;
+  max-width: 210px;
+  padding: 0.45rem 0.75rem;
+  font-size: 0.9rem;
+  border-radius: 0.6rem;
+  border: 1px solid rgba(233, 222, 209, 0.9);
+  background: #ffffff;
+  outline: none;
+  transition:
+    border-color 0.16s ease,
+    box-shadow 0.16s ease,
+    background-color 0.16s ease;
+}
+
+.filter-input:focus,
+.select:focus {
+  border-color: var(--ff-primary);
+  box-shadow: 0 0 0 1px rgba(255, 140, 140, 0.18);
+}
+
+/* 숫자 인풋 */
+.number-input {
+  max-width: 160px;
+}
+
+/* 칩 버튼 */
+.chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.chip-row-sub {
+  margin-top: 0.1rem;
+}
+
+.chip {
+  border-radius: 999px;
+  padding: 0.25rem 0.7rem;
+  border: 1px solid transparent;
+  background: transparent;
+  font-size: 0.8rem;
+  cursor: pointer;
+  color: var(--ff-text-muted);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  transition:
+    background-color 0.16s ease,
+    border-color 0.16s ease,
+    color 0.16s ease,
+    transform 0.08s ease,
+    box-shadow 0.16s ease;
+}
+
+.chip-outline {
+  border-color: rgba(233, 222, 209, 0.9);
+  background-color: #ffffff;
+}
+
+.chip:hover {
+  background-color: rgba(255, 140, 140, 0.06);
+}
+
+.chip-active {
+  background-color: var(--ff-primary);
+  border-color: var(--ff-primary);
+  color: #ffffff;
+  box-shadow: 0 8px 18px rgba(255, 140, 140, 0.3);
+}
+
+/* ===== 빈 상태 ===== */
+
+.list-empty {
+  margin-top: 1rem;
+  font-size: 0.9rem;
+  color: var(--ff-text-muted);
+}
+
+/* ===== 카드 그리드 ===== */
+
+.card-grid {
+  margin-top: 0.6rem;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.care-card-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* 카드 */
+.care-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding: 0.9rem 0.9rem 0.95rem;
+  border-radius: 0.9rem;
+  background: #ffffff;
+  border: 1px solid rgba(240, 227, 214, 0.9);
+  box-shadow: 0 12px 26px rgba(203, 152, 116, 0.15);
+  transition:
+    transform 0.12s ease,
+    box-shadow 0.12s ease,
+    border-color 0.12s ease;
+}
+
+.care-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 16px 32px rgba(203, 152, 116, 0.2);
+  border-color: rgba(255, 140, 140, 0.7);
+}
+
+/* 헤더 영역 */
+.care-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.care-card-title h2 {
+  margin: 0 0 0.1rem;
+  font-size: 1.02rem;
+  color: var(--ff-text);
+}
+
+.care-location {
+  margin: 0;
+  font-size: 0.82rem;
+  color: var(--ff-text-muted);
+}
+
+/* 가격 뱃지 */
+.care-price-badge {
+  font-size: 0.8rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+  background: rgba(255, 140, 140, 0.1);
+  color: var(--ff-primary);
+  white-space: nowrap;
+}
+
+/* 사진 */
+.care-photo-wrap {
+  margin-top: 0.5rem;
+  margin-bottom: 0.4rem;
+}
+
+.care-photo {
+  width: 100%;
+  height: 160px;
+  object-fit: contain;
+  border-radius: 0.8rem;
+  background: #fafafa;
+  border: 1px solid #f1f4f3;
+}
+
+/* 소개 */
+.care-experience {
+  margin: 0;
+  font-size: 0.88rem;
+  color: var(--ff-text);
+}
+
+/* 동물 태그 */
+.care-animals {
+  margin-top: 0.35rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+
+.care-tag {
+  font-size: 0.75rem;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  background: rgba(247, 240, 231, 0.9);
+  color: var(--ff-text);
+}
+
+/* 푸터 */
+.care-footer {
+  margin-top: 0.4rem;
+  border-top: 1px dashed rgba(233, 222, 209, 0.9);
+  padding-top: 0.4rem;
+}
+
+.care-note {
+  margin: 0;
+  font-size: 0.78rem;
+  color: var(--ff-text-muted);
+}
+
+/* ===== 반응형 ===== */
+
+@media (max-width: 1024px) {
+  .filter-bar {
+    grid-template-columns: 1.4fr 1.4fr;
+  }
+
+  .card-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .list-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .filter-bar {
+    grid-template-columns: 1fr;
+  }
+
+  .filter-group-row {
+    grid-template-columns: 1fr;
+  }
+
+  .card-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

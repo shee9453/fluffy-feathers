@@ -1,0 +1,237 @@
+/* Apply.css */
+
+.apply-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.4rem;
+}
+
+/* 비로그인 상태 */
+.apply-state {
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.apply-title {
+  margin: 0 0 0.4rem;
+  font-size: 1.35rem;
+  color: var(--ff-text);
+}
+
+.apply-sub {
+  margin: 0;
+  font-size: 0.92rem;
+  color: var(--ff-text-muted);
+}
+
+.apply-notice {
+  margin-top: 0.7rem;
+  font-size: 0.85rem;
+  color: var(--ff-text-muted);
+}
+
+/* ===== 헤더 ===== */
+
+.apply-header {
+  padding-bottom: 0.8rem;
+  border-bottom: 1px solid var(--ff-border-subtle);
+}
+
+.apply-header h1 {
+  margin: 0 0 0.4rem;
+  font-size: 1.35rem;
+  color: var(--ff-text);
+}
+
+/* ==== 폼 레이아웃 ==== */
+
+.apply-form {
+  margin-top: 0.4rem;
+}
+
+.apply-form-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1.2fr) minmax(0, 1.1fr);
+  gap: 1rem;
+}
+
+/* 카드 섹션 */
+
+.apply-section {
+  padding: 1rem 0.95rem 1.05rem;
+  border-radius: 0.95rem;
+  background: #ffffff;
+  border: 1px solid rgba(240, 227, 214, 0.9);
+  box-shadow: 0 10px 24px rgba(203, 152, 116, 0.12);
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+.apply-section-title {
+  margin: 0 0 0.2rem;
+  font-size: 1rem;
+  color: var(--ff-text);
+}
+
+/* 공통 폼 요소 */
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.form-group label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--ff-text-muted);
+}
+
+.apply-input,
+.apply-select,
+.apply-textarea {
+  width: 100%;
+  padding: 0.45rem 0.75rem;
+  font-size: 0.9rem;
+  border-radius: 0.6rem;
+  border: 1px solid rgba(233, 222, 209, 0.9);
+  background: #ffffff;
+  outline: none;
+  transition:
+    border-color 0.16s ease,
+    box-shadow 0.16s ease,
+    background-color 0.16s ease;
+}
+
+.apply-input:focus,
+.apply-select:focus,
+.apply-textarea:focus {
+  border-color: var(--ff-primary);
+  box-shadow: 0 0 0 1px rgba(255, 140, 140, 0.18);
+}
+
+.apply-textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+/* 힌트 텍스트 */
+
+.apply-hint {
+  margin: 0.15rem 0 0;
+  font-size: 0.8rem;
+  color: var(--ff-text-muted);
+}
+
+.apply-hint.small {
+  font-size: 0.78rem;
+}
+
+/* 지역 선택 */
+
+.apply-region-row {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* 동물 타입 그룹 */
+
+.apply-type-groups {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+.apply-type-group-title {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--ff-text-muted);
+  margin-bottom: 0.2rem;
+}
+
+.apply-type-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.apply-type-chip {
+  background: #f8fdfb;
+  border-color: #e2f0ea;
+}
+
+/* 칩 공통 (List.css와 톤 맞춤) */
+
+.chip {
+  border-radius: 999px;
+  padding: 0.25rem 0.7rem;
+  border: 1px solid transparent;
+  background: transparent;
+  font-size: 0.8rem;
+  cursor: pointer;
+  color: var(--ff-text-muted);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  transition:
+    background-color 0.16s ease,
+    border-color 0.16s ease,
+    color 0.16s ease,
+    transform 0.08s ease,
+    box-shadow 0.16s ease;
+}
+
+.chip-outline {
+  border-color: rgba(233, 222, 209, 0.9);
+  background-color: #ffffff;
+}
+
+.chip:hover {
+  background-color: rgba(255, 140, 140, 0.06);
+}
+
+.chip-active {
+  background-color: var(--ff-primary);
+  border-color: var(--ff-primary);
+  color: #ffffff;
+  box-shadow: 0 8px 18px rgba(255, 140, 140, 0.3);
+}
+
+/* 칩 줄 */
+
+.apply-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+/* 에러 메시지 */
+
+.apply-error {
+  margin: 0.4rem 0 0.4rem;
+  font-size: 0.83rem;
+  color: #c0392b;
+}
+
+/* 버튼은 Booking/Detail 의 reserve-btn 재사용
+   .reserve-btn.full-width { width: 100%; } 이미 Booking.css에 정의돼 있음 */
+
+/* ===== 반응형 ===== */
+
+@media (max-width: 1024px) {
+  .apply-form-grid {
+    grid-template-columns: minmax(0, 1.3fr) minmax(0, 1.3fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .apply-form-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .apply-region-row {
+    flex-direction: column;
+  }
+}
