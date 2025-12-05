@@ -23,7 +23,7 @@ import BoardList from "./pages/board/BoardList.jsx";
 import BoardDetail from "./pages/board/BoardDetail.jsx";
 import BoardWrite from "./pages/board/BoardWrite.jsx";
 import BoardEdit from "./pages/board/BoardEdit.jsx";
-
+import SeoAnimalCare from "./pages/SeoAnimalCare";
 
 const router = createBrowserRouter([
   {
@@ -45,7 +45,7 @@ const router = createBrowserRouter([
       { path: "/board/post/:id", element: <BoardDetail /> },
       { path: "/board/write", element: <BoardWrite /> },
       { path: "/board/edit/:id", element: <BoardEdit /> },
-
+      { path: "/seo/animal-care", element: <SeoAnimalCare /> },
     ],
   },
 ]);

@@ -23,6 +23,10 @@ function AuthPage() {
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
 
+  // 모달 상태
+  const [showConfirmModal, setShowConfirmModal] = useState(false);      // 이메일 인증 안내
+  const [showEmailExistsModal, setShowEmailExistsModal] = useState(false); // 중복 이메일 안내
+
   // 이미 로그인한 상태라면 간단 안내
   if (user) {
     return (
@@ -86,8 +90,22 @@ function AuthPage() {
       return;
     }
 
-    const newUser = data.user;
+    const newUser = data?.user || null;
 
+    // ✅ 이미 가입된 이메일인지 체크 (Supabase 공식 패턴)
+    //    identities가 비어 있으면 이미 존재하는 계정
+    if (
+      newUser &&
+      Array.isArray(newUser.identities) &&
+      newUser.identities.length === 0
+    ) {
+      setLoading(false);
+      setShowEmailExistsModal(true); // "이미 가입된 이메일" 모달
+      setMode("login");
+      return;
+    }
+
+    // 여기까지 왔다 = 실제 신규 가입
     if (!newUser) {
       setErrorMsg("회원정보를 불러오지 못했습니다.");
       setLoading(false);
@@ -95,6 +113,8 @@ function AuthPage() {
     }
 
     // 2) profiles 테이블에 프로필 행 생성 (user_id = auth.users.id)
+    //    ⚠ 여기서 RLS가 막으면 42501 뜨니까, Supabase에서 profiles RLS 비활성화하거나
+    //       INSERT 허용 policy를 반드시 열어둬야 함.
     const ageNumber = age ? Number(age) : null;
 
     const { error: profileError } = await supabase.from("profiles").insert({
@@ -107,138 +127,193 @@ function AuthPage() {
 
     if (profileError) {
       console.error(profileError);
-      setErrorMsg("프로필 저장 중 오류가 발생했습니다.");
+      setErrorMsg(
+        '프로필 저장 중 오류가 발생했습니다. 나중에 "마이페이지"에서 다시 시도해 주세요.'
+      );
       setLoading(false);
       return;
     }
 
+    // ✅ 회원가입 성공 → 이메일 인증 안내 모달
     setLoading(false);
-    alert("회원가입이 완료되었습니다. 이제 로그인해 주세요.");
     setMode("login");
+    setPassword("");
+    setShowConfirmModal(true);
   };
 
   return (
-    <div className="detail-page auth-page">
-      <div className="detail-box auth-card">
-        {/* 모드 토글 */}
-        <div className="auth-toggle">
-          <button
-            className={`auth-toggle-btn ${
-              mode === "login" ? "auth-toggle-active" : ""
-            }`}
-            type="button"
-            onClick={() => setMode("login")}
-          >
-            로그인
-          </button>
-          <button
-            className={`auth-toggle-btn ${
-              mode === "signup" ? "auth-toggle-active" : ""
-            }`}
-            type="button"
-            onClick={() => setMode("signup")}
-          >
-            회원가입
-          </button>
-        </div>
+    <>
+      <div className="detail-page auth-page">
+        <div className="detail-box auth-card">
+          {/* 모드 토글 */}
+          <div className="auth-toggle">
+            <button
+              className={`auth-toggle-btn ${
+                mode === "login" ? "auth-toggle-active" : ""
+              }`}
+              type="button"
+              onClick={() => setMode("login")}
+            >
+              로그인
+            </button>
+            <button
+              className={`auth-toggle-btn ${
+                mode === "signup" ? "auth-toggle-active" : ""
+              }`}
+              type="button"
+              onClick={() => setMode("signup")}
+            >
+              회원가입
+            </button>
+          </div>
 
-        <h1 className="auth-title">
-          {mode === "login" ? "로그인" : "회원가입"}
-        </h1>
-        <p className="auth-subtitle">
-          Fluffy & Feathers 서비스를 이용하려면{" "}
-          {mode === "login" ? "로그인" : "계정을 만들어 주세요."}
-        </p>
+          <h1 className="auth-title">
+            {mode === "login" ? "로그인" : "회원가입"}
+          </h1>
+          <p className="auth-subtitle">
+            Fluffy & Feathers 서비스를 이용하려면{" "}
+            {mode === "login" ? "로그인" : "계정을 만들어 주세요."}
+          </p>
 
-        {errorMsg && <p className="auth-error">{errorMsg}</p>}
+          {errorMsg && <p className="auth-error">{errorMsg}</p>}
 
-        {/* 공통: 이메일 / 비밀번호 */}
-        <div className="form-group">
-          <label>이메일</label>
-          <input
-            type="email"
-            placeholder="example@email.com"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-        </div>
+          {/* 공통: 이메일 / 비밀번호 */}
+          <div className="form-group">
+            <label>이메일</label>
+            <input
+              type="email"
+              placeholder="example@email.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </div>
 
-        <div className="form-group form-group-spaced">
-          <label>비밀번호</label>
-          <input
-            type="password"
-            placeholder="8자 이상"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </div>
+          <div className="form-group form-group-spaced">
+            <label>비밀번호</label>
+            <input
+              type="password"
+              placeholder="8자 이상"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </div>
 
-        {/* 회원가입일 때만 추가 정보 입력 */}
-        {mode === "signup" && (
-          <>
-            <div className="form-group form-group-spaced">
-              <label>닉네임</label>
-              <input
-                placeholder="게시판/후기에서 보일 이름"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-              />
-            </div>
-
-            <div className="form-group form-group-spaced">
-              <label>지역</label>
-              <input
-                placeholder="예: 서울 은평구"
-                value={region}
-                onChange={(e) => setRegion(e.target.value)}
-              />
-            </div>
-
-            <div className="form-group form-group-row form-group-spaced">
-              <div className="form-col">
-                <label>성별</label>
+          {/* 회원가입일 때만 추가 정보 입력 */}
+          {mode === "signup" && (
+            <>
+              <div className="form-group form-group-spaced">
+                <label>닉네임</label>
                 <input
-                  placeholder="선택 (예: 여성)"
-                  value={gender}
-                  onChange={(e) => setGender(e.target.value)}
+                  placeholder="게시판/후기에서 보일 이름"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
                 />
               </div>
-              <div className="form-col form-col-small">
-                <label>나이</label>
+
+              <div className="form-group form-group-spaced">
+                <label>지역</label>
                 <input
-                  type="number"
-                  placeholder="나이"
-                  value={age}
-                  onChange={(e) => setAge(e.target.value)}
+                  placeholder="예: 서울 은평구"
+                  value={region}
+                  onChange={(e) => setRegion(e.target.value)}
                 />
               </div>
-            </div>
-          </>
-        )}
 
-        <div className="auth-submit-wrap">
-          {mode === "login" ? (
-            <button
-              className="primary-btn full-width"
-              type="button"
-              onClick={handleLogin}
-              disabled={loading}
-            >
-              {loading ? "로그인 중..." : "로그인"}
-            </button>
-          ) : (
-            <button
-              className="primary-btn full-width"
-              type="button"
-              onClick={handleSignUp}
-              disabled={loading}
-            >
-              {loading ? "가입 중..." : "회원가입"}
-            </button>
+              <div className="form-group form-group-row form-group-spaced">
+                <div className="form-col">
+                  <label>성별</label>
+                  <input
+                    placeholder="선택 (예: 여성)"
+                    value={gender}
+                    onChange={(e) => setGender(e.target.value)}
+                  />
+                </div>
+                <div className="form-col form-col-small">
+                  <label>나이</label>
+                  <input
+                    type="number"
+                    placeholder="나이"
+                    value={age}
+                    onChange={(e) => setAge(e.target.value)}
+                  />
+                </div>
+              </div>
+            </>
           )}
+
+          <div className="auth-submit-wrap">
+            {mode === "login" ? (
+              <button
+                className="primary-btn full-width"
+                type="button"
+                onClick={handleLogin}
+                disabled={loading}
+              >
+                {loading ? "로그인 중..." : "로그인"}
+              </button>
+            ) : (
+              <button
+                className="primary-btn full-width"
+                type="button"
+                onClick={handleSignUp}
+                disabled={loading}
+              >
+                {loading ? "가입 중..." : "회원가입"}
+              </button>
+            )}
+          </div>
         </div>
       </div>
-    </div>
+
+      {/* 이메일 인증 안내 모달 */}
+      {showConfirmModal && (
+        <div className="auth-modal-overlay">
+          <div className="auth-modal">
+            <h3 className="auth-modal-title">회원가입 완료</h3>
+            <p className="auth-modal-text">
+              입력하신 이메일 주소로 인증 메일을 보냈어요.
+              <br />
+              메일함에서 <b>확인(Confirm) 링크</b>를 눌러
+              <br />
+              이메일 인증을 완료한 뒤 로그인해 주세요.
+            </p>
+            <button
+              type="button"
+              className="primary-btn full-width auth-modal-btn"
+              onClick={() => setShowConfirmModal(false)}
+            >
+              확인했습니다
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* 이미 등록된 이메일 모달 */}
+      {showEmailExistsModal && (
+        <div className="auth-modal-overlay">
+          <div className="auth-modal">
+            <h3 className="auth-modal-title">이미 가입된 이메일이에요</h3>
+            <p className="auth-modal-text">
+              이 이메일 주소로 이미 가입된 계정이 있습니다.
+              <br />
+              <b>로그인 화면</b>으로 이동해서 로그인하거나,
+              <br />
+              비밀번호를 잊으셨다면 재설정을 진행해 주세요.
+            </p>
+            <button
+              type="button"
+              className="primary-btn full-width auth-modal-btn"
+              onClick={() => {
+                setMode("login");
+                setShowEmailExistsModal(false);
+              }}
+            >
+              로그인 화면으로 이동
+            </button>
+          </div>
+        </div>
+      )}
+    </>
   );
 }
 

@@ -146,3 +146,42 @@
     max-width: 100%;
   }
 }
+/* 이메일 인증 안내 모달 */
+
+.auth-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.auth-modal {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 18px 16px 16px;
+  width: 90%;
+  max-width: 360px;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.18);
+  text-align: center;
+}
+
+.auth-modal-title {
+  margin: 0 0 8px;
+  font-size: 1.05rem;
+  color: var(--ff-text);
+}
+
+.auth-modal-text {
+  margin: 0;
+  font-size: 0.86rem;
+  line-height: 1.6;
+  color: var(--ff-text-muted);
+}
+
+.auth-modal-btn {
+  margin-top: 14px;
+  font-size: 0.9rem;
+}
