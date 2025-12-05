@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://fluffy-feathers.vercel.app/sitemap.xml

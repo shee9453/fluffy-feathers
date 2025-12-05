@@ -19,6 +19,12 @@ function Home() {
             햄스터, 토끼, 고슴도치, 앵무새까지.
             <br className="hero-br-mobile" />
             집을 비워야 할 때, 걱정 대신 안심을 맡겨보세요.
+            <br/>
+            <p className="seo-text">
+            Fluffy & Feathers는 앵무새 위탁, 햄스터 위탁, 소동물 돌봄 서비스를 제공하는 플랫폼입니다.
+            <br className="hero-br-mobile" />
+            앵무새, 토끼, 파충류 등 다양한 반려동물 위탁 돌보미를 찾을 수 있습니다.
+          </p>
           </p>
 
           <div className="hero-actions">
