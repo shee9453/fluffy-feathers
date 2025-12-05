@@ -99,26 +99,22 @@ function ListPage() {
   }, [animalTypes]);
 
   // 사용 중인 그룹/타입만 필터 옵션에 노출
-  const { groupOptions, typeOptions } = useMemo(() => {
-    const usedCodes = new Set();
-    carers.forEach((c) => {
-      (c.animal_type_codes || []).forEach((code) => usedCodes.add(code));
-    });
+  // 🔁 DB에 등록된 모든 동물 그룹/타입을 필터에 노출
+const { groupOptions, typeOptions } = useMemo(() => {
+  // 대분류는 animal_groups 테이블 전체
+  const groups = animalGroups;
 
-    let usedTypes = animalTypes.filter((t) => usedCodes.has(t.code));
-    const usedGroupIds = new Set(usedTypes.map((t) => t.group_id));
-    const groups = animalGroups.filter((g) => usedGroupIds.has(g.id));
+  // 소분류는 선택된 groupFilter에 따라 필터링 (all이면 전체)
+  let types = animalTypes;
+  if (groupFilter !== "all") {
+    types = types.filter((t) => t.group_id === groupFilter);
+  }
 
-    if (groupFilter !== "all") {
-      usedTypes = usedTypes.filter((t) => t.group_id === groupFilter);
-    }
-
-    return {
-      groupOptions: groups,
-      typeOptions: usedTypes,
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [carers, animalTypes, animalGroups, groupFilter]);
+  return {
+    groupOptions: groups,
+    typeOptions: types,
+  };
+}, [animalTypes, animalGroups, groupFilter]);
 
   // 필터 + 정렬
   const filteredAndSortedCarers = useMemo(() => {

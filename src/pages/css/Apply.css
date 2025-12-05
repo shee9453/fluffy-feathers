@@ -92,7 +92,7 @@
 .apply-input,
 .apply-select,
 .apply-textarea {
-  width: 100%;
+  /* width: 100%; */
   padding: 0.45rem 0.75rem;
   font-size: 0.9rem;
   border-radius: 0.6rem;
