@@ -195,11 +195,11 @@ function EditCarer() {
             onChange={(e) => setRegion(e.target.value)}
           />
         </div>
-
         <div className="form-group">
           <label>경험 소개</label>
           <textarea
-            rows={4}
+            className="apply-textarea"
+            rows={5}
             placeholder="반려 경험, 돌봄 가능 내용 등을 자유롭게 적어주세요."
             value={experience}
             onChange={(e) => setExperience(e.target.value)}

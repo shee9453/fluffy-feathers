@@ -24,6 +24,10 @@ import BoardDetail from "./pages/board/BoardDetail.jsx";
 import BoardWrite from "./pages/board/BoardWrite.jsx";
 import BoardEdit from "./pages/board/BoardEdit.jsx";
 import SeoAnimalCare from "./pages/SeoAnimalCare";
+import ChangePassword from "./pages/ChangePassword";
+import ResetPassword from "./pages/ResetPassword";
+import BookingEdit from "./pages/BookingEdit.jsx";
+import ReviewWrite from "./pages/ReviewWrite";
 
 const router = createBrowserRouter([
   {
@@ -39,6 +43,7 @@ const router = createBrowserRouter([
       { path: "/mypage", element: <MyPage /> },
       { path: "/carer/edit/:id", element: <EditCarer /> },
       { path: "/mybooking/:id", element: <MyBookingDetail /> },
+      { path: "/booking/edit/:id", element: <BookingEdit /> },
       { path: "/care-requests", element: <CareRequests /> },
       { path: "/board", element: <BoardList /> },
       { path: "/board/:category", element: <BoardList /> },
@@ -46,6 +51,9 @@ const router = createBrowserRouter([
       { path: "/board/write", element: <BoardWrite /> },
       { path: "/board/edit/:id", element: <BoardEdit /> },
       { path: "/seo/animal-care", element: <SeoAnimalCare /> },
+      { path: "/change-password", element: <ChangePassword /> },
+      { path: "/reset-password", element: <ResetPassword /> },
+      { path: "/review/write/:id", element: <ReviewWrite /> },
     ],
   },
 ]);

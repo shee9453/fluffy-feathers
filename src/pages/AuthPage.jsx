@@ -24,8 +24,10 @@ function AuthPage() {
   const [errorMsg, setErrorMsg] = useState("");
 
   // 모달 상태
-  const [showConfirmModal, setShowConfirmModal] = useState(false);      // 이메일 인증 안내
+  const [showConfirmModal, setShowConfirmModal] = useState(false);       // 이메일 인증 안내
   const [showEmailExistsModal, setShowEmailExistsModal] = useState(false); // 중복 이메일 안내
+  const [showResetSentModal, setShowResetSentModal] = useState(false);     // 비밀번호 재설정 메일 안내
+  const [resetSending, setResetSending] = useState(false);
 
   // 이미 로그인한 상태라면 간단 안내
   if (user) {
@@ -92,8 +94,7 @@ function AuthPage() {
 
     const newUser = data?.user || null;
 
-    // ✅ 이미 가입된 이메일인지 체크 (Supabase 공식 패턴)
-    //    identities가 비어 있으면 이미 존재하는 계정
+    // ✅ 이미 가입된 이메일인지 체크 (identities가 비어 있으면 기존 계정)
     if (
       newUser &&
       Array.isArray(newUser.identities) &&
@@ -113,8 +114,6 @@ function AuthPage() {
     }
 
     // 2) profiles 테이블에 프로필 행 생성 (user_id = auth.users.id)
-    //    ⚠ 여기서 RLS가 막으면 42501 뜨니까, Supabase에서 profiles RLS 비활성화하거나
-    //       INSERT 허용 policy를 반드시 열어둬야 함.
     const ageNumber = age ? Number(age) : null;
 
     const { error: profileError } = await supabase.from("profiles").insert({
@@ -139,6 +138,40 @@ function AuthPage() {
     setMode("login");
     setPassword("");
     setShowConfirmModal(true);
+  };
+
+  // 비밀번호 재설정 메일 발송
+  const handleSendResetEmail = async () => {
+    setErrorMsg("");
+
+    if (!email) {
+      setErrorMsg("비밀번호 재설정 링크를 보내려면 이메일을 먼저 입력해 주세요.");
+      return;
+    }
+
+    try {
+      setResetSending(true);
+
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        // 실제 서비스에서 원하는 리다이렉트 URL로 바꿔도 됨
+        //redirectTo: window.location.origin,
+        redirectTo: `${window.location.origin}/reset-password?mode=recovery`,
+      });
+
+      setResetSending(false);
+
+      if (error) {
+        console.error(error);
+        setErrorMsg("비밀번호 재설정 메일 발송 중 오류가 발생했습니다.");
+        return;
+      }
+
+      setShowResetSentModal(true);
+    } catch (err) {
+      console.error(err);
+      setResetSending(false);
+      setErrorMsg("비밀번호 재설정 메일 발송 중 알 수 없는 오류가 발생했습니다.");
+    }
   };
 
   return (
@@ -197,6 +230,20 @@ function AuthPage() {
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
+
+          {/* 로그인 모드일 때만: 비밀번호 재설정 링크 */}
+          {mode === "login" && (
+            <div className="auth-sub-actions">
+              <button
+                type="button"
+                className="auth-link-button"
+                onClick={handleSendResetEmail}
+                disabled={resetSending || loading}
+              >
+                {resetSending ? "메일 보내는 중..." : "비밀번호를 잊으셨나요?"}
+              </button>
+            </div>
+          )}
 
           {/* 회원가입일 때만 추가 정보 입력 */}
           {mode === "signup" && (
@@ -309,6 +356,27 @@ function AuthPage() {
               }}
             >
               로그인 화면으로 이동
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* 비밀번호 재설정 메일 안내 모달 */}
+      {showResetSentModal && (
+        <div className="auth-modal-overlay">
+          <div className="auth-modal">
+            <h3 className="auth-modal-title">비밀번호 재설정 메일 발송</h3>
+            <p className="auth-modal-text">
+              입력하신 이메일로 비밀번호 재설정 링크를 보냈어요.
+              <br />
+              메일함에서 링크를 눌러 새 비밀번호를 설정해 주세요.
+            </p>
+            <button
+              type="button"
+              className="primary-btn full-width auth-modal-btn"
+              onClick={() => setShowResetSentModal(false)}
+            >
+              확인
             </button>
           </div>
         </div>

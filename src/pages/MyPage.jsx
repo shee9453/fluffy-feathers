@@ -253,6 +253,22 @@ function MyPage() {
             </p>
           </div>
         </div>
+
+        {/* ✅ 계정 관리 영역 - 비밀번호 변경 버튼 */}
+        <div className="mypage-account-actions">
+          <div className="mypage-account-email">
+            <span className="mypage-account-label">이메일</span>
+            <span className="mypage-account-value">{user.email}</span>
+          </div>
+          <Link to="/change-password">
+            <button
+              type="button"
+              className="small-btn mypage-password-btn"
+            >
+              비밀번호 변경
+            </button>
+          </Link>
+        </div>
       </header>
 
       {/* 2) 내 돌보미 프로필 */}
@@ -336,6 +352,8 @@ function MyPage() {
                   ? "cancelled"
                   : b.status === "requested"
                   ? "requested"
+                  : b.status === "accepted"
+                  ? "accepted"
                   : b.status || "other";
 
               const statusLabel =
@@ -343,6 +361,8 @@ function MyPage() {
                   ? "취소됨"
                   : status === "requested"
                   ? "요청됨"
+                  : status === "accepted"
+                  ? "수락됨"
                   : b.status || "알 수 없음";
 
               return (
@@ -369,10 +389,10 @@ function MyPage() {
                       <span className="label">돌봄 기간</span>
                       <span>{makePeriodText(b)}</span>
                     </div>
-                    <div className="mypage-booking-row">
+                    {/* <div className="mypage-booking-row">
                       <span className="label">시작 시간</span>
                       <span>{b.booking_time}</span>
-                    </div>
+                    </div> */}
                     <div className="mypage-booking-row">
                       <span className="label">반려동물</span>
                       <span>{b.pet_info}</span>

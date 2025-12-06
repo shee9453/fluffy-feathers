@@ -1,12 +1,13 @@
 // src/pages/MyBookingDetail.jsx
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabaseClient";
 import { useAuth } from "../contexts/AuthContext";
 import "./css/MyBookingDetail.css";
 
 function MyBookingDetail() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const { user, authLoading } = useAuth();
 
   const [booking, setBooking] = useState(null);
@@ -115,7 +116,9 @@ function MyBookingDetail() {
   if (loading) {
     return (
       <div className="mybooking-page mybooking-state">
-        <p className="mybooking-state-text">예약 정보를 불러오는 중입니다...</p>
+        <p className="mybooking-state-text">
+          예약 정보를 불러오는 중입니다...
+        </p>
       </div>
     );
   }
@@ -135,6 +138,72 @@ function MyBookingDetail() {
   const periodText = booking.end_date
     ? `${booking.booking_date} ~ ${booking.end_date}`
     : booking.booking_date;
+
+  // ✅ 예약자 여부
+  const isApplicant = booking.user_id === user.id;
+
+  // ✅ 지난 예약 여부 (종료일자 또는 시작일자 기준)
+  const lastDateStr = booking.end_date || booking.booking_date;
+  let isPast = false;
+  if (lastDateStr) {
+    const today = new Date();
+    const end = new Date(lastDateStr);
+    // 해당 날짜 하루가 다 지난 시점 기준
+    end.setHours(23, 59, 59, 999);
+    isPast = end.getTime() < today.getTime();
+  }
+
+  // ✅ 버튼 노출 조건
+  // - 예약자 + 아직 수락되지 않은 예약(= requested) → 수정 / 취소 가능
+  const canEditOrCancel = isApplicant && statusKey === "requested";
+  const canEdit = canEditOrCancel;
+  const canCancel = canEditOrCancel;
+
+  // - 예약자 + 수락된 예약 + 날짜 지난 경우 → 후기 쓰기 가능
+  const canWriteReview = isApplicant && statusKey === "accepted" && isPast;
+
+  // ✅ 예약 수정 (이미 만든 /booking/edit/:id 페이지로 이동)
+  const handleEditBooking = () => {
+    navigate(`/booking/edit/${booking.id}`);
+  };
+
+  // ✅ 예약 취소
+  const handleCancelBooking = async () => {
+    if (
+      !window.confirm(
+        "예약을 취소하시겠어요?\n돌보미와 이미 합의한 내용이 있다면 먼저 상의해주세요."
+      )
+    ) {
+      return;
+    }
+
+    try {
+      const { error } = await supabase
+        .from("bookings")
+        .update({ status: "cancelled_by_user" })
+        .eq("id", booking.id)
+        .eq("user_id", user.id);
+
+      if (error) {
+        console.error(error);
+        alert("예약 취소 중 오류가 발생했습니다.");
+        return;
+      }
+
+      setBooking((prev) =>
+        prev ? { ...prev, status: "cancelled_by_user" } : prev
+      );
+      alert("예약이 취소되었습니다.");
+    } catch (err) {
+      console.error(err);
+      alert("예약 취소 중 알 수 없는 오류가 발생했습니다.");
+    }
+  };
+
+  // ✅ 후기 작성 (/review/write/:bookingId 페이지로 이동)
+  const handleWriteReview = () => {
+    navigate(`/review/write/${booking.id}`);
+  };
 
   return (
     <div className="mybooking-page">
@@ -175,10 +244,10 @@ function MyBookingDetail() {
             <span className="label">돌봄 기간</span>
             <span>{periodText}</span>
           </div>
-          <div className="mybooking-row">
+          {/* <div className="mybooking-row">
             <span className="label">시작 시간</span>
             <span>{booking.booking_time || "-"}</span>
-          </div>
+          </div> */}
           <div className="mybooking-row">
             <span className="label">반려동물</span>
             <span>{booking.pet_info}</span>
@@ -210,9 +279,57 @@ function MyBookingDetail() {
 
       {/* 하단 버튼 */}
       <footer className="mybooking-footer">
-        <button className="primary-btn" type="button">
-          채팅 / 연락하기
-        </button>
+        <div className="mybooking-footer-left">
+          {canEditOrCancel && (
+            <p className="mybooking-footer-hint">
+              아직 돌보미가 수락하지 않은 예약입니다. 이 단계에서는
+              <br />
+              <b>예약 내용을 수정</b>하거나 <b>직접 취소</b>할 수 있어요.
+            </p>
+          )}
+          {canWriteReview && (
+            <p className="mybooking-footer-hint">
+              돌봄이 모두 끝난 예약입니다. 돌보미에게{" "}
+              <b>후기를 남겨보세요.</b>
+            </p>
+          )}
+        </div>
+
+        <div className="mybooking-footer-actions">
+          {canEdit && (
+            <button
+              className="secondary-btn"
+              type="button"
+              onClick={handleEditBooking}
+            >
+              예약 수정
+            </button>
+          )}
+
+          {canCancel && (
+            <button
+              className="secondary-btn"
+              type="button"
+              onClick={handleCancelBooking}
+            >
+              예약 취소
+            </button>
+          )}
+
+          {canWriteReview && (
+            <button
+              className="secondary-btn"
+              type="button"
+              onClick={handleWriteReview}
+            >
+              후기 쓰기
+            </button>
+          )}
+
+          <button className="primary-btn" type="button">
+            채팅 / 연락하기
+          </button>
+        </div>
       </footer>
     </div>
   );

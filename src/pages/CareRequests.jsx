@@ -197,10 +197,10 @@ function CareRequests() {
                     <span>{makePeriodText(req)}</span>
                   </div>
 
-                  <div className="care-requests-row">
+                  {/* <div className="care-requests-row">
                     <span className="label">시작 시간</span>
                     <span>{req.booking_time || "-"}</span>
-                  </div>
+                  </div> */}
 
                   <div className="care-requests-row">
                     <span className="label">반려동물</span>

@@ -1,0 +1,190 @@
+/* 페이지 레이아웃 */
+.review-page {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 24px 16px 40px;
+}
+
+.review-card {
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 20px 18px 24px;
+  box-shadow: 0 10px 30px rgba(31, 63, 55, 0.06);
+}
+
+/* 상태 화면 */
+.review-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 280px;
+}
+
+.review-state-text {
+  font-size: 14px;
+  color: #777;
+  text-align: center;
+}
+
+.review-state-error {
+  color: #c0392b;
+}
+
+/* 헤더 */
+.review-header {
+  margin-bottom: 18px;
+}
+
+.review-title {
+  font-size: 22px;
+  font-weight: 700;
+  margin: 0 0 4px;
+  color: #25352d;
+}
+
+.review-sub {
+  font-size: 13px;
+  color: #666;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.review-name {
+  font-weight: 600;
+  color: #1c6b4e;
+}
+
+/* 요약 영역 */
+.review-summary {
+  margin-top: 14px;
+  border-radius: 12px;
+  background: #f5fbf8;
+  padding: 10px 12px;
+}
+
+.review-summary-item {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 13px;
+  margin: 2px 0;
+}
+
+.review-summary-item .label {
+  color: #7a8b83;
+}
+
+/* 폼 */
+.review-form {
+  margin-top: 12px;
+}
+
+.review-form .form-group {
+  margin-bottom: 16px;
+}
+
+.review-form label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: #314238;
+  margin-bottom: 6px;
+}
+
+.review-hint {
+  margin: 4px 0 0;
+  font-size: 11px;
+  color: #888;
+}
+
+/* 별점 */
+.review-rating-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.review-rating-chip {
+  border-radius: 999px;
+  border: 1px solid #d7e5dd;
+  background: #ffffff;
+  font-size: 13px;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.review-rating-active {
+  background: #1c6b4e;
+  border-color: #1c6b4e;
+  color: #ffffff;
+}
+
+/* 텍스트 영역 */
+.review-textarea {
+  /* width: 100%; */
+  min-height: 120px;
+  border-radius: 10px;
+  border: 1px solid #dfe7e2;
+  padding: 10px 12px;
+  font-size: 13px;
+  resize: vertical;
+  outline: none;
+}
+
+.review-textarea:focus {
+  border-color: #1c6b4e;
+  box-shadow: 0 0 0 1px rgba(28, 107, 78, 0.1);
+}
+
+/* 에러 */
+.review-error {
+  font-size: 13px;
+  color: #c0392b;
+  margin: 2px 0 0;
+}
+
+/* 버튼 줄 */
+.review-button-row {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+/* 모달 */
+.review-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(9, 22, 17, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 40;
+}
+
+.review-modal {
+  width: 100%;
+  max-width: 360px;
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 20px 18px 18px;
+  box-shadow: 0 18px 40px rgba(16, 44, 33, 0.35);
+}
+
+.review-modal-title {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0 0 6px;
+  color: #25352d;
+}
+
+.review-modal-text {
+  font-size: 13px;
+  color: #555;
+  line-height: 1.6;
+  margin: 0 0 16px;
+}
+
+.review-modal-btn {
+  width: 100%;
+}

@@ -276,6 +276,11 @@
 }
 
 /* 상태 뱃지 */
+.mypage-status-accepted{
+  background: #eef5f2;
+  border-color: #d5e3dd;
+  color: #57736a;
+}
 
 .mypage-status-badge {
   font-size: 0.78rem;
@@ -352,4 +357,47 @@
   .mypage-booking-body {
     grid-template-columns: minmax(0, 1fr);
   }
+}
+/* --- 계정 관리 / 비밀번호 변경 영역 --- */
+
+.mypage-account-actions {
+  margin-top: 16px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: #f7faf9;
+  border: 1px solid #e2f0ea;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.mypage-account-email {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.mypage-account-label {
+  font-size: 11px;
+  color: #7a8a82;
+}
+
+.mypage-account-value {
+  font-size: 13px;
+  font-weight: 500;
+  color: #2f3f36;
+  word-break: break-all;
+}
+
+.mypage-password-btn {
+  background: #fff;
+  border: 1px solid #3b6b5a;
+  color: #3b6b5a;
+  padding-inline: 14px;
+}
+
+.mypage-password-btn:hover {
+  background: #eaf4f0;
 }
