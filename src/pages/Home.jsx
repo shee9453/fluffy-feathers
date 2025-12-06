@@ -1,6 +1,6 @@
-// src/pages/Home.jsx
 import { Link } from "react-router-dom";
 import "../pages/css/Home.css";
+import LogoImage from "../assets/logo-main.png"; // ← 새 로고 이미지 추가
 
 function Home() {
   return (
@@ -15,25 +15,22 @@ function Home() {
             <br />
             믿을 수 있는 돌보미에게.
           </h1>
+
           <p className="hero-desc">
             햄스터, 토끼, 고슴도치, 앵무새까지.
             <br className="hero-br-mobile" />
             집을 비워야 할 때, 걱정 대신 안심을 맡겨보세요.
-            <br/>
-            <p className="seo-text">
+          </p>
+
+          <p className="seo-text">
             Fluffy & Feathers는 앵무새 위탁, 햄스터 위탁, 소동물 돌봄 서비스를 제공하는 플랫폼입니다.
             <br className="hero-br-mobile" />
             앵무새, 토끼, 파충류 등 다양한 반려동물 위탁 돌보미를 찾을 수 있습니다.
           </p>
-          </p>
 
           <div className="hero-actions">
-            <Link to="/list" className="primary-btn">
-              돌봄 찾으러 가기
-            </Link>
-            <Link to="/apply" className="secondary-btn">
-              돌보미로 참여하기
-            </Link>
+            <Link to="/list" className="primary-btn">돌봄 찾으러 가기</Link>
+            <Link to="/apply" className="secondary-btn">돌보미로 참여하기</Link>
           </div>
 
           <p className="hero-note">
@@ -41,12 +38,16 @@ function Home() {
           </p>
         </div>
 
+        {/* 오른쪽 일러스트 → 로고로 교체 */}
         <div className="hero-illustration">
-          <div className="pet-circle">
-            <div className="pet pet-bird">🦜</div>
-            <div className="pet pet-bunny">🐰</div>
-            <div className="pet pet-hamster">🐹</div>
+          <div className="logo-wrapper">
+            <img
+              src={LogoImage}
+              alt="Fluffy & Feathers 로고"
+              className="hero-logo-img"
+            />
           </div>
+
           <p className="hero-subtext">
             Fluffy & Feathers와 함께
             <br />
@@ -67,6 +68,7 @@ function Home() {
               소동물과 반려조에 특화된 돌봄 매칭 서비스예요.
             </p>
           </div>
+
           <div className="feature-card">
             <h3>집사 마음을 아는 케어</h3>
             <p>
@@ -75,6 +77,7 @@ function Home() {
               습도·온도·먹이까지 꼼꼼한 케어를 지향해요.
             </p>
           </div>
+
           <div className="feature-card">
             <h3>안심 기반 추천</h3>
             <p>
