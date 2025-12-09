@@ -1,0 +1,225 @@
+/* src/pages/css/Filter.css */
+
+.filter-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.4rem;
+}
+
+/* 헤더 */
+
+.filter-header {
+  padding-bottom: 0.8rem;
+  border-bottom: 1px solid var(--ff-border-subtle);
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.8rem;
+}
+
+.filter-header h1 {
+  margin: 0 0 0.4rem;
+  font-size: 1.35rem;
+  color: var(--ff-text);
+}
+
+.filter-header p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--ff-text-muted);
+}
+
+.filter-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* pill 스타일은 List.css/Apply.css에 이미 있을 것으로 가정 */
+
+.pill-cta {
+  background-color: var(--ff-primary);
+  color: #ffffff;
+}
+
+/* 폼 */
+
+.filter-form {
+  margin-top: 0.4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.filter-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1.2fr);
+  gap: 1rem;
+}
+
+/* 카드형 섹션 */
+
+.filter-section {
+  padding: 1rem 0.95rem 1.05rem;
+  border-radius: 0.95rem;
+  background: #ffffff;
+  border: 1px solid rgba(240, 227, 214, 0.9);
+  box-shadow: 0 10px 24px rgba(203, 152, 116, 0.12);
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+.filter-section-title {
+  margin: 0 0 0.3rem;
+  font-size: 1rem;
+  color: var(--ff-text);
+}
+
+/* 공통 폼 요소 */
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.form-group label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--ff-text-muted);
+}
+
+.filter-input,
+.filter-select {
+  padding: 0.45rem 0.75rem;
+  font-size: 0.9rem;
+  border-radius: 0.6rem;
+  border: 1px solid rgba(233, 222, 209, 0.9);
+  background: #ffffff;
+  outline: none;
+  transition:
+    border-color 0.16s ease,
+    box-shadow 0.16s ease,
+    background-color 0.16s ease;
+}
+
+.filter-input:focus,
+.filter-select:focus {
+  border-color: var(--ff-primary);
+  box-shadow: 0 0 0 1px rgba(255, 140, 140, 0.18);
+}
+
+.filter-row {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* 힌트 텍스트 */
+
+.filter-hint {
+  margin: 0.15rem 0 0;
+  font-size: 0.8rem;
+  color: var(--ff-text-muted);
+}
+
+.filter-hint.error {
+  color: #c0392b;
+}
+
+/* chip 그룹 */
+
+.chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.chip-row-wrap {
+  flex-wrap: wrap;
+}
+
+/* 링크 */
+
+.filter-link {
+  font-weight: 600;
+  color: var(--ff-primary);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* 버튼 영역 */
+
+.filter-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.6rem;
+  margin-top: 0.4rem;
+}
+
+.btn-primary,
+.btn-secondary {
+  border-radius: 999px;
+  padding: 0.5rem 1.2rem;
+  font-size: 0.88rem;
+  border: 1px solid transparent;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+  transition:
+    background-color 0.16s ease,
+    border-color 0.16s ease,
+    color 0.16s ease,
+    box-shadow 0.16s ease;
+}
+
+/* 메인 CTA 버튼 */
+
+.btn-primary {
+  background-color: var(--ff-primary);
+  border-color: var(--ff-primary);
+  color: #ffffff;
+  box-shadow: 0 8px 18px rgba(255, 140, 140, 0.3);
+}
+
+.btn-primary:hover {
+  box-shadow: 0 10px 22px rgba(255, 140, 140, 0.38);
+}
+
+/* 초기화 버튼 */
+
+.btn-secondary {
+  background-color: #ffffff;
+  border-color: rgba(233, 222, 209, 0.9);
+  color: var(--ff-text-muted);
+}
+
+.btn-secondary:hover {
+  background-color: rgba(255, 140, 140, 0.04);
+}
+
+/* 반응형 */
+
+@media (max-width: 1024px) {
+  .filter-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .filter-header {
+    flex-direction: column;
+  }
+
+  .filter-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .btn-primary,
+  .btn-secondary {
+    width: 100%;
+  }
+}

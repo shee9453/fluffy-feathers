@@ -1,4 +1,179 @@
 /* Detail.css */
+/* 상단 대표 이미지 고정 크기 */
+.detail-photo-wrap {
+  border: none;
+  padding: 0;
+  background: none;
+  cursor: pointer;
+  display: block;
+  width: 260px;
+  height: 260px;
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+.detail-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* 환경 사진 섹션 썸네일들 */
+
+.detail-photo-section {
+  margin-top: 1rem;
+}
+
+.detail-photo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.75rem;
+}
+
+.detail-photo-group h4 {
+  margin: 0 0 0.4rem;
+  font-size: 0.9rem;
+  color: var(--ff-text-muted);
+}
+
+.detail-photo-thumb {
+  border: none;
+  padding: 0;
+  background: none;
+  cursor: pointer;
+  width: 220px;
+  height: 220px;
+  border-radius: 0.9rem;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+}
+
+.detail-photo-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.detail-photo-count {
+  position: absolute;
+  right: 0.6rem;
+  bottom: 0.6rem;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.6);
+  color: #ffffff;
+  font-size: 0.8rem;
+}
+
+/* 📸 모달 */
+
+.photo-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 10, 8, 0.65);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+.photo-modal {
+  background: #ffffff;
+  border-radius: 1rem;
+  max-width: 90vw;
+  max-height: 90vh;
+  padding: 0.8rem 0.9rem 1rem;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.photo-modal-close {
+  border: none;
+  background: transparent;
+  align-self: flex-end;
+  font-size: 1.4rem;
+  line-height: 1;
+  cursor: pointer;
+  color: #444;
+}
+
+.photo-modal-title {
+  margin: 0 0 0.3rem;
+  font-size: 0.95rem;
+  color: var(--ff-text-muted);
+}
+
+.photo-modal-main {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 260px;
+  min-height: 260px;
+}
+
+.photo-modal-image {
+  max-width: 80vw;
+  max-height: 70vh;
+  object-fit: contain;
+  border-radius: 0.75rem;
+}
+
+.photo-modal-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+  margin-top: 0.2rem;
+}
+
+.photo-modal-nav {
+  border-radius: 999px;
+  border: 1px solid rgba(233, 222, 209, 0.9);
+  background: #ffffff;
+  padding: 0.25rem 0.7rem;
+  cursor: pointer;
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+.photo-modal-nav:hover {
+  background: rgba(255, 140, 140, 0.06);
+}
+
+.photo-modal-index {
+  font-size: 0.85rem;
+  color: var(--ff-text-muted);
+}
+
+/* 반응형 */
+@media (max-width: 768px) {
+  .detail-photo-wrap {
+    width: 200px;
+    height: 200px;
+  }
+
+  .detail-photo-thumb {
+    width: 180px;
+    height: 180px;
+  }
+
+  .photo-modal {
+    width: 94vw;
+    max-width: 94vw;
+  }
+
+  .photo-modal-image {
+    max-width: 86vw;
+    max-height: 65vh;
+  }
+}
 
 .detail-page {
   display: flex;

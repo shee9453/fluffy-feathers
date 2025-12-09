@@ -75,6 +75,15 @@
   color: var(--ff-text-muted);
 }
 
+/* 요약 카드 안의 옵션 칩 */
+.booking-summary-options {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-top: 0.1rem;
+}
+
 /* ===== 폼 ===== */
 
 .booking-form {
@@ -157,7 +166,70 @@
   color: var(--ff-text-muted);
 }
 
-/* 예약 버튼 재사용 (Detail.css 에 있는 것과 동일하게 쓰거나 살짝 변경 가능) */
+/* ===== 옵션 칩 / 선택 버튼 ===== */
+
+.booking-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.booking-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.8rem;
+  border-radius: 999px;
+  border: 1px solid rgba(233, 222, 209, 0.9);
+  background: #ffffff;
+  color: var(--ff-text-muted);
+  cursor: default;
+  transition:
+    background-color 0.16s ease,
+    border-color 0.16s ease,
+    color 0.16s ease,
+    box-shadow 0.16s ease,
+    transform 0.08s ease;
+}
+
+/* 요약 카드 안의 뱃지 느낌 */
+.booking-summary-options .booking-chip {
+  font-size: 0.78rem;
+  padding: 0.2rem 0.65rem;
+}
+
+/* 선택 가능한 칩 (버튼) */
+.booking-chip.selectable {
+  cursor: pointer;
+}
+
+.booking-chip.selectable:hover:not(:disabled) {
+  background-color: rgba(255, 140, 140, 0.05);
+}
+
+.booking-chip.selectable.active {
+  background-color: var(--ff-primary);
+  border-color: var(--ff-primary);
+  color: #ffffff;
+  box-shadow: 0 8px 18px rgba(255, 140, 140, 0.3);
+  transform: translateY(-1px);
+}
+
+.booking-chip:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* 작은 설명 텍스트 */
+.booking-hint {
+  margin: 0.2rem 0 0;
+  font-size: 0.8rem;
+  color: var(--ff-text-muted);
+}
+
+/* ===== 예약 버튼 ===== */
+
 .reserve-btn {
   display: inline-flex;
   align-items: center;
@@ -231,13 +303,6 @@
 .booking-modal-btn {
   margin-top: 0.2rem;
 }
-
-/* primary-btn 은 Home.css 등에서 이미 정의되어 있지만, 혹시 없으면 여기서 정의해도 됨 */
-/* 
-.primary-btn {
-  ...
-}
-*/
 
 /* ===== 반응형 ===== */
 
