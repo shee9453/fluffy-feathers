@@ -522,7 +522,7 @@ function ListPage() {
                   {/* 크기별 요약 / 윙 상태 / 옵션 뱃지 */}
                   <div className="care-tags-row">
                     {/* 크기별 가능 여부 */}
-                    <div className="care-size-tags">
+                    {/* <div className="care-size-tags">
                       {c.supports_small && (
                         <span className="care-tag subtle">
                           소형{" "}
@@ -533,7 +533,7 @@ function ListPage() {
                       )}
                       {c.supports_medium && (
                         <span className="care-tag subtle">
-                          중소형{" "}
+                          중형{" "}
                           {typeof c.price_medium_per_night === "number"
                             ? `${c.price_medium_per_night.toLocaleString()}원`
                             : ""}
@@ -547,16 +547,16 @@ function ListPage() {
                             : ""}
                         </span>
                       )}
-                    </div>
+                    </div> */}
 
                     {/* 윙컷/풀윙 */}
-                    <div className="care-wing">
+                    {/* <div className="care-wing">
                       {c.accepts_fullwing ? (
                         <span className="care-tag highlight">풀윙 가능</span>
                       ) : (
                         <span className="care-tag">윙컷 앵이만</span>
                       )}
-                    </div>
+                    </div> */}
                   </div>
 
                   {/* 옵션 (픽업/약물/이유식) */}

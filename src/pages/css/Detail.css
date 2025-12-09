@@ -1,16 +1,57 @@
-/* Detail.css */
-/* 상단 대표 이미지 고정 크기 */
+.detail-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.4rem;
+}
+
+/* 로딩/에러 상태 */
+.detail-state {
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.detail-state-text {
+  font-size: 0.9rem;
+  color: var(--ff-text-muted);
+}
+
+.detail-state-error {
+  color: #c0392b;
+}
+
+.detail-back-link {
+  margin-top: 0.6rem;
+  font-size: 0.85rem;
+  color: var(--ff-primary);
+  text-decoration: none;
+}
+
+/* ===== 상단 프로필 영역 ===== */
+
+.detail-top {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.6rem;
+  padding: 1.4rem 1.6rem 1.2rem;
+  border-radius: 1.3rem;
+  background: linear-gradient(135deg, #ffe9d4, #ffe0d6);
+}
+
+/* 왼쪽 대표 이미지 카드 */
 .detail-photo-wrap {
+  flex-shrink: 0;
   border: none;
   padding: 0;
-  background: none;
   cursor: pointer;
   display: block;
-  width: 260px;
-  height: 260px;
-  border-radius: 1rem;
+  width: 220px;
+  height: 220px;
+  border-radius: 1.2rem;
   overflow: hidden;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(245, 210, 190, 0.9);
+  background: #ffffff;
+  box-shadow: 0 10px 22px rgba(203, 152, 116, 0.28);
 }
 
 .detail-photo {
@@ -20,10 +61,146 @@
   display: block;
 }
 
-/* 환경 사진 섹션 썸네일들 */
+/* 오른쪽 정보 래퍼 */
+.detail-top-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+/* 헤더 (이름/지역/뱃지/가격) */
+.detail-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1.2rem;
+}
+
+.detail-header-main h1 {
+  margin: 0 0 0.2rem;
+  font-size: 1.35rem;
+  color: var(--ff-text);
+}
+
+.detail-location {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--ff-text-muted);
+}
+
+.detail-rating {
+  margin: 0.3rem 0 0;
+  font-size: 0.85rem;
+  color: var(--ff-text);
+}
+
+/* 윙컷/크기 뱃지 줄 */
+.detail-badge-row {
+  margin-top: 0.45rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  align-items: center;
+}
+
+.detail-size-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+
+/* 오른쪽 메타 */
+.detail-header-side {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  align-items: flex-end;
+  text-align: right;
+}
+
+.detail-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid var(--ff-border-subtle);
+  color: var(--ff-text-muted);
+}
+
+.detail-badge.subtle {
+  background: rgba(247, 240, 231, 0.95);
+  border-color: rgba(243, 225, 202, 0.9);
+}
+
+.detail-price-pill {
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--ff-primary);
+}
+
+/* 돌봄 가능 동물 태그 */
+.detail-animals {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-top: 0.2rem;
+}
+
+.detail-tag {
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  background: rgba(247, 240, 231, 0.95);
+  color: var(--ff-text);
+}
+
+/* ===== 공통 박스/그리드 ===== */
+
+.detail-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1.1fr);
+  gap: 0.9rem;
+}
+
+.detail-grid-full {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+}
+
+.detail-box {
+  padding: 1rem 0.95rem 1.05rem;
+  border-radius: 0.95rem;
+  background: #ffffff;
+  border: 1px solid rgba(240, 227, 214, 0.9);
+  box-shadow: 0 10px 24px rgba(203, 152, 116, 0.12);
+}
+
+.detail-box h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1rem;
+  color: var(--ff-text);
+}
+
+.detail-long-text {
+  margin: 0 0 0.4rem;
+  font-size: 0.9rem;
+  color: var(--ff-text);
+  white-space: pre-line;
+}
+
+.detail-label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--ff-text-muted);
+}
+
+/* ===== 환경 사진 섹션 ===== */
 
 .detail-photo-section {
-  margin-top: 1rem;
+  margin-top: 0.2rem;
 }
 
 .detail-photo-grid {
@@ -152,187 +329,6 @@
   color: var(--ff-text-muted);
 }
 
-/* 반응형 */
-@media (max-width: 768px) {
-  .detail-photo-wrap {
-    width: 200px;
-    height: 200px;
-  }
-
-  .detail-photo-thumb {
-    width: 180px;
-    height: 180px;
-  }
-
-  .photo-modal {
-    width: 94vw;
-    max-width: 94vw;
-  }
-
-  .photo-modal-image {
-    max-width: 86vw;
-    max-height: 65vh;
-  }
-}
-
-.detail-page {
-  display: flex;
-  flex-direction: column;
-  gap: 1.4rem;
-}
-
-/* 로딩/에러 상태 */
-.detail-state {
-  align-items: center;
-  justify-content: center;
-}
-
-.detail-state-text {
-  font-size: 0.9rem;
-  color: var(--ff-text-muted);
-}
-
-.detail-state-error {
-  color: #c0392b;
-}
-
-.detail-back-link {
-  margin-top: 0.6rem;
-  font-size: 0.85rem;
-  color: var(--ff-primary);
-  text-decoration: none;
-}
-
-/* ===== 상단 프로필 영역 ===== */
-
-.detail-top {
-  display: flex;
-  flex-direction: column;
-  gap: 0.8rem;
-}
-
-/* 사진 */
-.detail-photo-wrap {
-  border-radius: 1rem;
-  overflow: hidden;
-  border: 1px solid #f1f4f3;
-  background: #fafafa;
-}
-
-.detail-photo {
-  width: 100%;
-  max-height: 260px;
-  object-fit: cover;
-  display: block;
-}
-
-/* 헤더 */
-.detail-header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 1rem;
-}
-
-.detail-header-main h1 {
-  margin: 0 0 0.2rem;
-  font-size: 1.35rem;
-  color: var(--ff-text);
-}
-
-.detail-location {
-  margin: 0;
-  font-size: 0.9rem;
-  color: var(--ff-text-muted);
-}
-
-.detail-rating {
-  margin: 0.3rem 0 0;
-  font-size: 0.85rem;
-  color: var(--ff-text);
-}
-
-/* 오른쪽 메타 */
-.detail-header-side {
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-  align-items: flex-end;
-  text-align: right;
-}
-
-.detail-badge {
-  display: inline-flex;
-  align-items: center;
-  padding: 0.25rem 0.7rem;
-  border-radius: 999px;
-  font-size: 0.78rem;
-  background: rgba(255, 255, 255, 0.9);
-  border: 1px solid var(--ff-border-subtle);
-  color: var(--ff-text-muted);
-}
-
-.detail-price-pill {
-  margin: 0;
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: var(--ff-primary);
-}
-
-/* 동물 태그 */
-.detail-animals {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.35rem;
-}
-
-.detail-tag {
-  padding: 0.25rem 0.6rem;
-  border-radius: 999px;
-  font-size: 0.78rem;
-  background: rgba(247, 240, 231, 0.95);
-  color: var(--ff-text);
-}
-
-/* ===== 공통 박스/그리드 ===== */
-
-.detail-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1.1fr);
-  gap: 0.9rem;
-}
-
-.detail-grid-full {
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-}
-
-.detail-box {
-  padding: 1rem 0.95rem 1.05rem;
-  border-radius: 0.95rem;
-  background: #ffffff;
-  border: 1px solid rgba(240, 227, 214, 0.9);
-  box-shadow: 0 10px 24px rgba(203, 152, 116, 0.12);
-}
-
-.detail-box h3 {
-  margin: 0 0 0.5rem;
-  font-size: 1rem;
-  color: var(--ff-text);
-}
-
-.detail-long-text {
-  margin: 0 0 0.4rem;
-  font-size: 0.9rem;
-  color: var(--ff-text);
-  white-space: pre-line;
-}
-
-.detail-label {
-  font-size: 0.82rem;
-  font-weight: 600;
-  color: var(--ff-text-muted);
-}
-
 /* ===== 요금 박스 ===== */
 
 .detail-price-box {
@@ -344,6 +340,39 @@
   font-size: 1rem;
   font-weight: 600;
   color: var(--ff-primary);
+}
+
+.detail-price-table {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  margin-bottom: 0.5rem;
+}
+
+.detail-price-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.6rem;
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--ff-text);
+}
+
+.detail-options h4 {
+  margin: 0 0 0.3rem;
+  font-size: 0.9rem;
+  color: var(--ff-text);
+}
+
+.detail-option-list {
+  margin: 0 0 0.4rem;
+  padding-left: 1.1rem;
+  font-size: 0.85rem;
+  color: var(--ff-text);
+}
+
+.detail-option-list li {
+  margin-bottom: 0.15rem;
 }
 
 .detail-notice {
@@ -456,6 +485,11 @@
     grid-template-columns: minmax(0, 1fr);
   }
 
+  .detail-top {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
   .detail-header {
     flex-direction: column;
     align-items: flex-start;
@@ -472,7 +506,28 @@
   }
 
   .reserve-btn {
-    /* width: 100%; */
     justify-content: center;
+  }
+}
+
+@media (max-width: 768px) {
+  .detail-photo-wrap {
+    width: 200px;
+    height: 200px;
+  }
+
+  .detail-photo-thumb {
+    width: 180px;
+    height: 180px;
+  }
+
+  .photo-modal {
+    width: 94vw;
+    max-width: 94vw;
+  }
+
+  .photo-modal-image {
+    max-width: 86vw;
+    max-height: 65vh;
   }
 }

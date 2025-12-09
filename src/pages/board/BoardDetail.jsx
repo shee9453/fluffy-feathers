@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { supabase } from "../../lib/supabaseClient";
 import { useAuth } from "../../contexts/AuthContext";
+import "@toast-ui/editor/dist/toastui-editor.css";
+import { Viewer } from "@toast-ui/react-editor";
 import "./css/BoardDetail.css";
 
 function BoardDetail() {
@@ -217,12 +219,11 @@ function BoardDetail() {
         </span>
       </header>
 
-      {/* 본문 HTML 렌더링 */}
+      {/* 본문 - Toast UI Viewer 로 마크다운 렌더링 */}
       <section className="detail-box board-detail-content-box">
-        <div
-          className="detail-long-text post-content"
-          dangerouslySetInnerHTML={{ __html: post.content }}
-        />
+        <div className="post-viewer-wrapper">
+          <Viewer initialValue={post.content || ""} />
+        </div>
       </section>
 
       {/* 수정/삭제 버튼 (작성자만) */}

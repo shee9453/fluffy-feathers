@@ -291,13 +291,13 @@ function Apply() {
 
       if (supportsMedium) {
         if (priceMedium === "") {
-          setSaveError("중소형 앵무새 1박 요금을 입력해주세요.");
+          setSaveError("중형 앵무새 1박 요금을 입력해주세요.");
           setSaving(false);
           return;
         }
         priceMediumNumber = Number(priceMedium);
         if (Number.isNaN(priceMediumNumber)) {
-          setSaveError("중소형 앵무새 요금은 숫자로 입력해주세요.");
+          setSaveError("중형 앵무새 요금은 숫자로 입력해주세요.");
           setSaving(false);
           return;
         }
@@ -1351,7 +1351,7 @@ function Apply() {
             <div className="form-group">
               <label>돌봄 가능한 앵무새 크기 &amp; 1박 요금</label>
               <p className="apply-hint small">
-                소형/중소형/대형 중 돌봄 가능한 크기를 선택하고, 1박 기준
+                소형/중형/대형 중 돌봄 가능한 크기를 선택하고, 1박 기준
                 금액을 입력해주세요.
               </p>
 
@@ -1381,7 +1381,7 @@ function Apply() {
                     onChange={() => setSupportsMedium((prev) => !prev)}
                     style={{ display: "none" }}
                   />
-                  중소형 앵무새(코뉴어 등)
+                  중형 앵무새(코뉴어 등)
                 </label>
                 <label
                   className={`chip chip-outline ${

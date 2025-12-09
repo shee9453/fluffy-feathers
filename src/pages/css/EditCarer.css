@@ -26,3 +26,63 @@
   border: 1px solid #e2f0ea;
   background: #fafafa;
 }
+
+/* EditCarer.css */
+
+/* 상태 텍스트 */
+.edit-carer-state-text {
+  padding: 16px;
+  font-size: 0.9rem;
+  color: var(--ff-text-muted);
+  text-align: center;
+}
+
+.edit-carer-state-error {
+  color: #c0392b;
+}
+
+.edit-carer-sub {
+  margin-top: 0.25rem;
+  font-size: 0.9rem;
+  color: var(--ff-text-muted);
+}
+
+/* 대표 이미지(현재) */
+.edit-carer-current-photo {
+  width: 120px;
+  height: 120px;
+  border-radius: 16px;
+  object-fit: cover;
+  border: 1px solid #e2f0ea;
+  background: #fafafa;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.03);
+  display: block;
+}
+
+/* 앵무새 / 공간 사진 썸네일 그리드 */
+.edit-carer-photo-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.edit-carer-sub-photo {
+  width: 90px;
+  height: 90px;
+  border-radius: 12px;
+  object-fit: cover;
+  border: 1px solid #e2f0ea;
+  background: #fafafa;
+  display: block;
+}
+
+/* 혹시 클래스 빠진 img 가 있어도 너무 커지지 않게 방어용 */
+.apply-form img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* 에러 텍스트 톤 맞추기 */
+.apply-sub.apply-error {
+  color: #c0392b;
+}

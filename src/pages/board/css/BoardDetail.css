@@ -218,3 +218,26 @@
     gap: 0.4rem;
   }
 }
+.post-viewer-wrapper .toastui-editor-contents {
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: var(--ff-text);
+}
+
+.post-viewer-wrapper .toastui-editor-contents h1,
+.post-viewer-wrapper .toastui-editor-contents h2,
+.post-viewer-wrapper .toastui-editor-contents h3 {
+  margin-top: 1.1rem;
+  margin-bottom: 0.4rem;
+  font-weight: 600;
+}
+
+.post-viewer-wrapper .toastui-editor-contents p {
+  margin: 0 0 0.6rem;
+}
+
+.post-viewer-wrapper .toastui-editor-contents ul,
+.post-viewer-wrapper .toastui-editor-contents ol {
+  padding-left: 1.2rem;
+  margin: 0 0 0.6rem;
+}

@@ -1,5 +1,5 @@
 // src/pages/board/BoardWrite.jsx
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { supabase } from "../../lib/supabaseClient";
 import { useAuth } from "../../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
@@ -13,6 +13,7 @@ function BoardWrite() {
 
   const { user } = useAuth();
   const navigate = useNavigate();
+  const textareaRef = useRef(null);
 
   useEffect(() => {
     const load = async () => {
@@ -38,20 +39,75 @@ function BoardWrite() {
     );
   }
 
+  // 간단한 마크다운 포맷 적용 함수
+  const applyFormat = (type) => {
+    const el = textareaRef.current;
+    if (!el) return;
+
+    const start = el.selectionStart;
+    const end = el.selectionEnd;
+    const selected = content.slice(start, end);
+
+    let wrapped = "";
+    if (type === "bold") {
+      wrapped = `**${selected || "굵게"}**`;
+    } else if (type === "italic") {
+      wrapped = `*${selected || "기울임"}*`;
+    } else if (type === "underline") {
+      // 마크다운엔 밑줄이 없어서, 그냥 __text__로 처리
+      wrapped = `__${selected || "밑줄"}__`;
+    } else if (type === "ul") {
+      wrapped = selected
+        ? selected
+            .split("\n")
+            .map((line) => (line ? `- ${line}` : ""))
+            .join("\n")
+        : "- 항목";
+    } else if (type === "ol") {
+      wrapped = selected
+        ? selected
+            .split("\n")
+            .map((line, idx) => (line ? `${idx + 1}. ${line}` : ""))
+            .join("\n")
+        : "1. 항목";
+    } else if (type === "quote") {
+      wrapped = selected
+        ? selected
+            .split("\n")
+            .map((line) => (line ? `> ${line}` : ""))
+            .join("\n")
+        : "> 인용문";
+    } else if (type === "hr") {
+      wrapped = "\n---\n";
+    }
+
+    const newValue = content.slice(0, start) + wrapped + content.slice(end);
+    setContent(newValue);
+
+    // 커서 위치 적당히 재설정
+    requestAnimationFrame(() => {
+      const pos = start + wrapped.length;
+      el.focus();
+      el.setSelectionRange(pos, pos);
+    });
+  };
+
   const handleSubmit = async () => {
+    const value = content;
+
     if (!categoryId || !title.trim()) {
       alert("카테고리와 제목을 입력해주세요.");
       return;
     }
 
-    if (!content.trim()) {
+    if (!value.trim()) {
       alert("내용을 입력해주세요.");
       return;
     }
 
     const { error } = await supabase.from("posts").insert({
       title: title.trim(),
-      content,
+      content: value, // 마크다운/텍스트 그대로 저장
       category_id: Number(categoryId),
       user_id: user.id,
     });
@@ -111,31 +167,67 @@ function BoardWrite() {
           <div className="board-editor-header">
             <span className="board-label">내용</span>
             <span className="board-editor-hint">
-              최소 한 줄 이상 작성해주세요.
+              기본 텍스트 + 간단한 마크다운(**굵게**, *기울임*, 목록 등)을 쓸 수
+              있어요.
             </span>
           </div>
 
-          {/* 가짜 툴바 (디자인용) */}
+          {/* 툴바 */}
           <div className="board-editor-toolbar">
-            <button type="button" className="toolbar-btn">
+            <button
+              type="button"
+              className="toolbar-btn"
+              onClick={() => applyFormat("bold")}
+            >
               B
             </button>
-            <button type="button" className="toolbar-btn">
+            <button
+              type="button"
+              className="toolbar-btn"
+              onClick={() => applyFormat("italic")}
+            >
               I
             </button>
-            <button type="button" className="toolbar-btn">
+            <button
+              type="button"
+              className="toolbar-btn"
+              onClick={() => applyFormat("underline")}
+            >
               U
             </button>
             <span className="toolbar-divider" />
-            <button type="button" className="toolbar-btn-sm">
+            <button
+              type="button"
+              className="toolbar-btn-sm"
+              onClick={() => applyFormat("ul")}
+            >
               • 목록
             </button>
-            <button type="button" className="toolbar-btn-sm">
+            <button
+              type="button"
+              className="toolbar-btn-sm"
+              onClick={() => applyFormat("ol")}
+            >
               1. 목록
+            </button>
+            <button
+              type="button"
+              className="toolbar-btn-sm"
+              onClick={() => applyFormat("quote")}
+            >
+              &gt; 인용
+            </button>
+            <button
+              type="button"
+              className="toolbar-btn-sm"
+              onClick={() => applyFormat("hr")}
+            >
+              ─ 구분선
             </button>
           </div>
 
           <textarea
+            ref={textareaRef}
             className="board-textarea"
             rows={12}
             placeholder={
@@ -146,9 +238,7 @@ function BoardWrite() {
           />
 
           <div className="board-editor-footer">
-            <span className="board-editor-count">
-              {contentLength} 글자
-            </span>
+            <span className="board-editor-count">{contentLength} 글자</span>
           </div>
         </div>
 

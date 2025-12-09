@@ -1,4 +1,3 @@
-// src/pages/MyBookingDetail.jsx
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabaseClient";
@@ -11,6 +10,7 @@ function MyBookingDetail() {
   const { user, authLoading } = useAuth();
 
   const [booking, setBooking] = useState(null);
+  const [applicantProfile, setApplicantProfile] = useState(null); // 예약자 프로필
   const [loading, setLoading] = useState(true);
   const [errorMsg, setErrorMsg] = useState("");
 
@@ -21,6 +21,7 @@ function MyBookingDetail() {
       setLoading(true);
       setErrorMsg("");
 
+      // 1) 예약 + 돌보미 정보
       const { data: bookingData, error } = await supabase
         .from("bookings")
         .select(
@@ -32,7 +33,8 @@ function MyBookingDetail() {
             region,
             region_city,
             region_district,
-            user_id
+            user_id,
+            phone
           )
         `
         )
@@ -61,6 +63,30 @@ function MyBookingDetail() {
         return;
       }
 
+      // 2) 예약자 프로필 조회
+      // profiles.user_id == bookings.user_id
+      let profile = null;
+      const { data: profileData, error: profileError } = await supabase
+        .from("profiles")
+        .select(
+          `
+          id,
+          user_id,
+          name,
+          region,
+          phone
+        `
+        )
+        .eq("user_id", bookingData.user_id)
+        .maybeSingle();
+
+      if (profileError) {
+        console.error("예약자 프로필 조회 중 오류:", profileError);
+      } else {
+        profile = profileData;
+      }
+
+      setApplicantProfile(profile);
       setBooking(bookingData);
       setLoading(false);
     };
@@ -79,18 +105,41 @@ function MyBookingDetail() {
     return c.region || "지역 미입력";
   };
 
+  // 예약자 지역: profiles.region 하나만 사용
+  const formatApplicantRegion = (p) => {
+    if (!p || !p.region) return "지역 미입력";
+    return p.region;
+  };
+
   const getStatusMeta = (statusRaw) => {
     const key = statusRaw || "requested";
     const labelMap = {
       requested: "요청됨",
       accepted: "수락됨",
       rejected: "거절됨",
-      cancelled_by_user: "신청자가 취소함",
+      cancelled: "취소됨",
+      completed: "완료됨",
     };
     return {
       key,
       label: labelMap[key] || statusRaw || "알 수 없음",
     };
+  };
+
+  const formatWingStatus = (wingStatus) => {
+    if (wingStatus === "wingcut") return "윙컷";
+    if (wingStatus === "fullwing") return "풀윙";
+    return "-";
+  };
+
+  const formatExtraCare = (b) => {
+    if (!b) return "-";
+    const items = [];
+    if (b.needs_pickup_drop) items.push("픽업·드랍");
+    if (b.needs_medication) items.push("약 복용 관리");
+    if (b.needs_handfeeding) items.push("이유식 급여");
+    if (items.length === 0) return "없음";
+    return items.join(" · ");
   };
 
   if (authLoading) {
@@ -142,32 +191,26 @@ function MyBookingDetail() {
   // ✅ 예약자 여부
   const isApplicant = booking.user_id === user.id;
 
-  // ✅ 지난 예약 여부 (종료일자 또는 시작일자 기준)
+  // ✅ 지난 예약 여부
   const lastDateStr = booking.end_date || booking.booking_date;
   let isPast = false;
   if (lastDateStr) {
     const today = new Date();
     const end = new Date(lastDateStr);
-    // 해당 날짜 하루가 다 지난 시점 기준
     end.setHours(23, 59, 59, 999);
     isPast = end.getTime() < today.getTime();
   }
 
-  // ✅ 버튼 노출 조건
-  // - 예약자 + 아직 수락되지 않은 예약(= requested) → 수정 / 취소 가능
+  // 버튼 노출 조건
   const canEditOrCancel = isApplicant && statusKey === "requested";
   const canEdit = canEditOrCancel;
   const canCancel = canEditOrCancel;
-
-  // - 예약자 + 수락된 예약 + 날짜 지난 경우 → 후기 쓰기 가능
   const canWriteReview = isApplicant && statusKey === "accepted" && isPast;
 
-  // ✅ 예약 수정 (이미 만든 /booking/edit/:id 페이지로 이동)
   const handleEditBooking = () => {
     navigate(`/booking/edit/${booking.id}`);
   };
 
-  // ✅ 예약 취소
   const handleCancelBooking = async () => {
     if (
       !window.confirm(
@@ -180,7 +223,7 @@ function MyBookingDetail() {
     try {
       const { error } = await supabase
         .from("bookings")
-        .update({ status: "cancelled_by_user" })
+        .update({ status: "cancelled" })
         .eq("id", booking.id)
         .eq("user_id", user.id);
 
@@ -191,7 +234,7 @@ function MyBookingDetail() {
       }
 
       setBooking((prev) =>
-        prev ? { ...prev, status: "cancelled_by_user" } : prev
+        prev ? { ...prev, status: "cancelled" } : prev
       );
       alert("예약이 취소되었습니다.");
     } catch (err) {
@@ -200,10 +243,16 @@ function MyBookingDetail() {
     }
   };
 
-  // ✅ 후기 작성 (/review/write/:bookingId 페이지로 이동)
   const handleWriteReview = () => {
     navigate(`/review/write/${booking.id}`);
   };
+
+  // 예약자 정보 파생값
+  const applicantName =
+    applicantProfile?.name || (isApplicant ? "나" : "예약자");
+  const applicantRegion = formatApplicantRegion(applicantProfile);
+  const applicantPhone =
+    applicantProfile?.phone || booking.contact_phone || "미입력";
 
   return (
     <div className="mybooking-page">
@@ -212,7 +261,8 @@ function MyBookingDetail() {
         <div>
           <h1>예약 상세 정보</h1>
           <p className="mybooking-sub">
-            돌봄 예약의 상세 내용을 확인하고, 연락 정보를 참고할 수 있어요.
+            돌봄 예약의 상세 내용을 확인하고, 예약자와 돌보미 정보를 함께 볼 수
+            있어요.
           </p>
         </div>
         <span
@@ -224,6 +274,23 @@ function MyBookingDetail() {
 
       {/* 본문 그리드 */}
       <section className="mybooking-grid">
+        {/* 예약자 정보 카드 */}
+        <article className="mybooking-card">
+          <h2 className="mybooking-card-title">예약자 정보</h2>
+          <div className="mybooking-row">
+            <span className="label">이름</span>
+            <span>{applicantName}</span>
+          </div>
+          <div className="mybooking-row">
+            <span className="label">지역</span>
+            <span>{applicantRegion}</span>
+          </div>
+          <div className="mybooking-row">
+            <span className="label">연락처</span>
+            <span>{applicantPhone}</span>
+          </div>
+        </article>
+
         {/* 돌보미 정보 카드 */}
         <article className="mybooking-card">
           <h2 className="mybooking-card-title">돌보미 정보</h2>
@@ -235,6 +302,10 @@ function MyBookingDetail() {
             <span className="label">지역</span>
             <span>{formatRegion(booking.carers)}</span>
           </div>
+          <div className="mybooking-row">
+            <span className="label">연락처</span>
+            <span>{booking.carers?.phone || "미입력"}</span>
+          </div>
         </article>
 
         {/* 예약 정보 카드 */}
@@ -244,13 +315,19 @@ function MyBookingDetail() {
             <span className="label">돌봄 기간</span>
             <span>{periodText}</span>
           </div>
-          {/* <div className="mybooking-row">
-            <span className="label">시작 시간</span>
-            <span>{booking.booking_time || "-"}</span>
-          </div> */}
           <div className="mybooking-row">
             <span className="label">반려동물</span>
             <span>{booking.pet_info}</span>
+          </div>
+
+          <div className="mybooking-row">
+            <span className="label">날개 상태</span>
+            <span>{formatWingStatus(booking.wing_status)}</span>
+          </div>
+
+          <div className="mybooking-row">
+            <span className="label">추가 케어 요청</span>
+            <span>{formatExtraCare(booking)}</span>
           </div>
 
           {booking.notes && (
@@ -260,21 +337,6 @@ function MyBookingDetail() {
             </div>
           )}
         </article>
-
-        {/* 연락 정보 카드 */}
-        <article className="mybooking-card">
-          <h2 className="mybooking-card-title">연락 정보</h2>
-          <div className="mybooking-row">
-            <span className="label">연락처</span>
-            <span>{booking.contact_phone || "미입력"}</span>
-          </div>
-          <p className="mybooking-hint">
-            실제 연락은 문자, 전화, 메신저 등으로 별도 진행됩니다.
-            <br />
-            Fluffy &amp; Feathers 데모 버전에는 인앱 채팅 기능이 포함되어
-            있지 않습니다.
-          </p>
-        </article>
       </section>
 
       {/* 하단 버튼 */}
@@ -282,9 +344,8 @@ function MyBookingDetail() {
         <div className="mybooking-footer-left">
           {canEditOrCancel && (
             <p className="mybooking-footer-hint">
-              아직 돌보미가 수락하지 않은 예약입니다. 이 단계에서는
-              <br />
-              <b>예약 내용을 수정</b>하거나 <b>직접 취소</b>할 수 있어요.
+              아직 돌보미가 수락하지 않은 예약입니다. <br />
+              이 단계에서는<b>예약 내용을 수정</b>하거나 <b>직접 취소</b>할 수 있어요.
             </p>
           )}
           {canWriteReview && (

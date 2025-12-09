@@ -1,4 +1,3 @@
-// src/pages/CareRequests.jsx
 import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabaseClient";
 import { useAuth } from "../contexts/AuthContext";
@@ -21,6 +20,7 @@ function CareRequests() {
       setLoading(true);
       setLoadError("");
 
+      // 내가 만든 돌보미 프로필들
       const { data: carers, error: carerError } = await supabase
         .from("carers")
         .select("id, name, region, region_city, region_district")
@@ -42,6 +42,7 @@ function CareRequests() {
 
       const carerIds = carers.map((c) => c.id);
 
+      // 해당 돌보미들에게 들어온 예약들
       const { data: bookings, error: bookingError } = await supabase
         .from("bookings")
         .select("*")
@@ -84,6 +85,22 @@ function CareRequests() {
   const makePeriodText = (req) => {
     if (req.end_date) return `${req.booking_date} ~ ${req.end_date}`;
     return req.booking_date;
+  };
+
+  const formatWingStatus = (wingStatus) => {
+    if (wingStatus === "wingcut") return "윙컷";
+    if (wingStatus === "fullwing") return "풀윙";
+    return "-";
+  };
+
+  const formatExtraCare = (req) => {
+    const items = [];
+    if (req.needs_pickup_drop) items.push("픽업·드랍");
+    if (req.needs_medication) items.push("약 복용 관리");
+    if (req.needs_handfeeding) items.push("이유식 급여");
+
+    if (items.length === 0) return "없음";
+    return items.join(" · ");
   };
 
   const handleUpdateStatus = async (id, nextStatus) => {
@@ -166,8 +183,10 @@ function CareRequests() {
                 ? "수락됨"
                 : status === "rejected"
                 ? "거절됨"
-                : status === "cancelled_by_user"
-                ? "신청자가 취소함"
+                : status === "cancelled"
+                ? "취소됨"
+                : status === "completed"
+                ? "완료됨"
                 : "요청됨";
 
             return (
@@ -197,14 +216,19 @@ function CareRequests() {
                     <span>{makePeriodText(req)}</span>
                   </div>
 
-                  {/* <div className="care-requests-row">
-                    <span className="label">시작 시간</span>
-                    <span>{req.booking_time || "-"}</span>
-                  </div> */}
-
                   <div className="care-requests-row">
                     <span className="label">반려동물</span>
                     <span>{req.pet_info}</span>
+                  </div>
+
+                  <div className="care-requests-row">
+                    <span className="label">날개 상태</span>
+                    <span>{formatWingStatus(req.wing_status)}</span>
+                  </div>
+
+                  <div className="care-requests-row">
+                    <span className="label">추가 케어 요청</span>
+                    <span>{formatExtraCare(req)}</span>
                   </div>
                 </div>
 

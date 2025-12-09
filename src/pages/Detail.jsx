@@ -1,4 +1,3 @@
-// src/pages/Detail.jsx
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { supabase } from "../lib/supabaseClient";
@@ -67,12 +66,11 @@ function Detail() {
       if (typesError) {
         console.error("animal_types 불러오기 실패:", typesError);
         setLoadError("동물 분류 정보를 불러오는 중 오류가 발생했어요.");
-        setLoading(false);
-        return;
+      } else {
+        setCarer(carerData);
+        setAnimalTypes(typesData || []);
       }
 
-      setCarer(carerData);
-      setAnimalTypes(typesData || []);
       setLoading(false);
     };
 
@@ -126,7 +124,8 @@ function Detail() {
 
     const map = {
       cage_only: "새장 안에서만",
-      near_cage: "새장 근처 플레이스탠드",
+      playground: "새장 근처 놀이터/스탠드",
+      near_cage: "새장 근처 플레이스탠드", // 혹시 예전 키가 남아있을 경우
       room: "방 하나 자유롭게",
       living_room: "거실에서 자유롭게",
       whole_house: "집 전체 자유롭게",
@@ -159,7 +158,7 @@ function Detail() {
       ? `${carer.region_city} ${carer.region_district}`
       : carer?.region_city || "지역 정보 없음";
 
-  // 📸 DB 컬럼 이름은 프로젝트에 맞게 하나만 실제로 쓰면 됨
+  // 📸 메인/환경 사진
   const mainPhotoUrl = carer?.photo_url || null;
   const parrotPhotos =
     carer?.parrot_photo_urls ||
@@ -238,56 +237,62 @@ function Detail() {
           </button>
         )}
 
-        <header className="detail-header">
-          <div className="detail-header-main">
-            <h1>{carer.name}</h1>
-            <p className="detail-location">{fullRegion}</p>
-            {avgRating !== null && (
+        <div className="detail-top-info">
+          <header className="detail-header">
+            <div className="detail-header-main">
+              <h1>{carer.name}</h1>
+              <p className="detail-location">{fullRegion}</p>
+              {/* {avgRating !== null && (
+                <p className="detail-rating">
+                  ⭐ 평균 {avgRating.toFixed(1)}점 · 리뷰 {reviews.length}개
+                </p>
+              )}
+               */}
               <p className="detail-rating">
-                ⭐ 평균 {avgRating.toFixed(1)}점 · 리뷰 {reviews.length}개
-              </p>
-            )}
+              ⭐ 평균 {(avgRating ?? 0).toFixed(1)}점 · 리뷰 {reviews.length}개
+             </p>
 
-            {/* 윙컷/풀윙, 크기 지원 뱃지 */}
-            <div className="detail-badge-row">
-              <span className="detail-badge">
-                {carer.accepts_fullwing ? "풀윙도 수용 가능" : "윙컷 앵이만 수용"}
-              </span>
-
-              <div className="detail-size-badges">
-                {carer.supports_small && (
-                  <span className="detail-badge subtle">소형</span>
-                )}
-                {carer.supports_medium && (
-                  <span className="detail-badge subtle">중소형</span>
-                )}
-                {carer.supports_large && (
-                  <span className="detail-badge subtle">대형</span>
-                )}
+              {/* 윙컷/풀윙, 크기 지원 뱃지 */}
+              <div className="detail-badge-row">
+                <span className="detail-badge">
+                  {carer.accepts_fullwing ? "풀윙도 수용 가능" : "윙컷 앵이만 수용"}
+                </span>
+                <br/>
+                <div className="detail-size-badges">
+                  {carer.supports_small && (
+                    <span className="detail-badge subtle">소형</span>
+                  )}
+                  {carer.supports_medium && (
+                    <span className="detail-badge subtle">중형</span>
+                  )}
+                  {carer.supports_large && (
+                    <span className="detail-badge subtle">대형</span>
+                  )}
+                </div>
               </div>
             </div>
-          </div>
 
-          <div className="detail-header-side">
-            <span className="detail-badge">돌보미 프로필</span>
-            <p className="detail-price-pill">
-              {minPrice != null
-                ? `1박 ${minPrice.toLocaleString()}원~`
-                : "요금 협의"}
-            </p>
-          </div>
-        </header>
+            <div className="detail-header-side">
+              <span className="detail-badge">돌보미 프로필</span>
+              <p className="detail-price-pill">
+                {minPrice != null
+                  ? `1박 ${minPrice.toLocaleString()}원~`
+                  : "요금 협의"}
+              </p>
+            </div>
+          </header>
 
-        {/* 돌봄 가능 동물 태그 */}
-        {animalNames.length > 0 && (
-          <div className="detail-animals">
-            {animalNames.map((name) => (
-              <span className="detail-tag" key={name}>
-                {name}
-              </span>
-            ))}
-          </div>
-        )}
+          {/* 돌봄 가능 동물 태그 */}
+          {/* {animalNames.length > 0 && (
+            <div className="detail-animals">
+              {animalNames.map((name) => (
+                <span className="detail-tag" key={name}>
+                  {name}
+                </span>
+              ))}
+            </div>
+          )} */}
+        </div>
       </section>
 
       {/* 환경 사진 – 각 그룹당 썸네일 1장만, 클릭 시 모달에서 슬라이드 */}
@@ -382,7 +387,7 @@ function Detail() {
             <span className="detail-label">다른 반려동물</span>
             <br />
             {carer.has_other_pets_non_parrot === true
-              ? carer.other_pets_description ||
+              ? carer.other_pet_types ||
                 "앵무새 외 다른 반려동물을 함께 키우고 있어요."
               : carer.has_other_pets_non_parrot === false
               ? "앵무새 외 다른 반려동물을 키우지 않아요."
@@ -445,7 +450,7 @@ function Detail() {
         <div className="detail-price-table">
           {carer.supports_small && (
             <p className="detail-price-row">
-              <span className="detail-label">소형</span>
+              <span className="detail-label">소형 </span>
               <span>
                 {typeof carer.price_small_per_night === "number"
                   ? `${carer.price_small_per_night.toLocaleString()}원`
@@ -455,7 +460,7 @@ function Detail() {
           )}
           {carer.supports_medium && (
             <p className="detail-price-row">
-              <span className="detail-label">중소형</span>
+              <span className="detail-label">중소형 </span>
               <span>
                 {typeof carer.price_medium_per_night === "number"
                   ? `${carer.price_medium_per_night.toLocaleString()}원`
@@ -465,7 +470,7 @@ function Detail() {
           )}
           {carer.supports_large && (
             <p className="detail-price-row">
-              <span className="detail-label">대형</span>
+              <span className="detail-label">대형 </span>
               <span>
                 {typeof carer.price_large_per_night === "number"
                   ? `${carer.price_large_per_night.toLocaleString()}원`
@@ -489,24 +494,24 @@ function Detail() {
             {carer.pickup_drop_available && (
               <li>
                 픽업·드랍 가능{" "}
-                {carer.pickup_drop_extra_fee
-                  ? `(+ ${carer.pickup_drop_extra_fee})`
+                {typeof carer.pickup_drop_fee === "number"
+                  ? `(+ ${carer.pickup_drop_fee.toLocaleString()}원/일)`
                   : "(추가 비용은 사전 협의)"}
               </li>
             )}
             {carer.medication_available && (
               <li>
                 약물 관리 가능{" "}
-                {carer.medication_extra_fee
-                  ? `(+ ${carer.medication_extra_fee})`
+                {typeof carer.medication_extra_fee === "number"
+                  ? `(+ ${carer.medication_extra_fee.toLocaleString()}원/일)`
                   : "(추가 비용은 사전 협의)"}
               </li>
             )}
             {carer.handfeeding_available && (
               <li>
                 이유식 급여 가능{" "}
-                {carer.handfeeding_extra_fee
-                  ? `(+ ${carer.handfeeding_extra_fee})`
+                {typeof carer.handfeeding_extra_fee === "number"
+                  ? `(+ ${carer.handfeeding_extra_fee.toLocaleString()}원/일)`
                   : "(추가 비용은 사전 협의)"}
               </li>
             )}

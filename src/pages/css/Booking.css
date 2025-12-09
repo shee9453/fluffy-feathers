@@ -325,3 +325,8 @@
     grid-template-columns: minmax(0, 1fr);
   }
 }
+.booking-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}

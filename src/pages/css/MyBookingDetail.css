@@ -154,12 +154,33 @@
 
 /* 하단 버튼 */
 
-.mybooking-footer {
+/* .mybooking-footer {
   margin-top: 0.3rem;
   display: flex;
   justify-content: flex-end;
+} */
+.mybooking-footer {
+  margin-top: 1.2rem;
+  padding-top: 0.8rem;
+  border-top: 1px solid var(--ff-border-subtle);
+
+  /* 🔽 가로 → 세로로 변경 */
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
 }
 
+/* 설명 텍스트 영역 (그대로 두거나 있어도 OK) */
+.mybooking-footer-left {
+  /* 전체 너비에서 위에 깔리는 느낌으로 */
+}
+
+/* 버튼 영역: 오른쪽 아래 정렬 */
+.mybooking-footer-actions {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;  /* 🔽 오른쪽 정렬 */
+}
 /* primary-btn 은 Home/Booking 에서 쓰던 걸 그대로 재사용 */
 
 @media (max-width: 900px) {

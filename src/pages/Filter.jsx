@@ -236,7 +236,7 @@ function FilterPage() {
                   }`}
                   onClick={() => setSize("medium")}
                 >
-                  중소형 (코뉴어 등)
+                  중형 (코뉴어, 퀘이커 등)
                 </button>
                 <button
                   type="button"
@@ -448,7 +448,7 @@ function FilterPage() {
                 onChange={(e) => setMaxPricePerNight(e.target.value)}
               />
               <p className="filter-hint">
-                소형/중소형/대형 중 내가 선택한 크기에 맞춰
+                소형/중형/대형 중 내가 선택한 크기에 맞춰
                 <br />
                 <b>1박 요금이 이 금액 이하인 돌보미만</b> 보여주도록 사용할 수
                 있어요.
