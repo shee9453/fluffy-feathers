@@ -1,3 +1,4 @@
+// src/pages/MyBookingDetail.jsx
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabaseClient";
@@ -64,7 +65,6 @@ function MyBookingDetail() {
       }
 
       // 2) 예약자 프로필 조회
-      // profiles.user_id == bookings.user_id
       let profile = null;
       const { data: profileData, error: profileError } = await supabase
         .from("profiles")
@@ -184,6 +184,9 @@ function MyBookingDetail() {
 
   const { key: statusKey, label: statusLabel } = getStatusMeta(booking.status);
 
+  // ✅ 채팅 가능 여부: 승인(accepted) 상태에서만
+  const canChat = statusKey === "accepted";
+
   const periodText = booking.end_date
     ? `${booking.booking_date} ~ ${booking.end_date}`
     : booking.booking_date;
@@ -245,6 +248,67 @@ function MyBookingDetail() {
 
   const handleWriteReview = () => {
     navigate(`/review/write/${booking.id}`);
+  };
+
+  // ✅ 채팅 열기: 예약자(user_id) + 돌보미(carers.user_id) + booking_id 조합으로 방 찾기/생성
+  const handleOpenChat = async () => {
+    // ✅ 승인 상태가 아닐 때는 채팅 불가
+    if (!canChat) {
+      alert("채팅은 돌보미가 예약을 승인(수락)한 이후에만 가능합니다.");
+      return;
+    }
+
+    if (!booking || !booking.carers || !booking.carers.user_id) {
+      alert("채팅을 시작할 수 있는 돌보미 정보가 없습니다.");
+      return;
+    }
+
+    try {
+      // 1) 기존 방 있는지 조회
+      const { data: existingRoom, error: roomError } = await supabase
+        .from("chat_rooms")
+        .select("*")
+        .eq("user_id", booking.user_id)
+        .eq("carer_id", booking.carers.user_id)
+        .eq("booking_id", booking.id)
+        .maybeSingle();
+
+      if (roomError && roomError.code !== "PGRST116") {
+        console.error(roomError);
+        alert("채팅방을 불러오는 중 오류가 발생했습니다.");
+        return;
+      }
+
+      // 2) 있으면 그 방으로
+      if (existingRoom) {
+        navigate(`/chat/${existingRoom.id}`);
+        return;
+      }
+
+      // 3) 없으면 새로 생성
+      const { data: newRoom, error: insertError } = await supabase
+        .from("chat_rooms")
+        .insert({
+          user_id: booking.user_id,
+          carer_id: booking.carers.user_id,
+          booking_id: booking.id,
+          last_message: null,
+          last_message_at: null,
+        })
+        .select()
+        .single();
+
+      if (insertError) {
+        console.error(insertError);
+        alert("채팅방을 생성하는 중 오류가 발생했습니다.");
+        return;
+      }
+
+      navigate(`/chat/${newRoom.id}`);
+    } catch (e) {
+      console.error(e);
+      alert("채팅을 여는 중 알 수 없는 오류가 발생했습니다.");
+    }
   };
 
   // 예약자 정보 파생값
@@ -345,7 +409,8 @@ function MyBookingDetail() {
           {canEditOrCancel && (
             <p className="mybooking-footer-hint">
               아직 돌보미가 수락하지 않은 예약입니다. <br />
-              이 단계에서는<b>예약 내용을 수정</b>하거나 <b>직접 취소</b>할 수 있어요.
+              이 단계에서는<b>예약 내용을 수정</b>하거나 <b>직접 취소</b>할 수
+              있어요.
             </p>
           )}
           {canWriteReview && (
@@ -387,9 +452,16 @@ function MyBookingDetail() {
             </button>
           )}
 
-          <button className="primary-btn" type="button">
-            채팅 / 연락하기
-          </button>
+          {/* ✅ 승인 상태일 때만 채팅 버튼 노출 */}
+          {canChat && (
+            <button
+              className="primary-btn"
+              type="button"
+              onClick={handleOpenChat}
+            >
+              채팅
+            </button>
+          )}
         </div>
       </footer>
     </div>

@@ -29,6 +29,8 @@ import ResetPassword from "./pages/ResetPassword";
 import BookingEdit from "./pages/BookingEdit.jsx";
 import ReviewWrite from "./pages/ReviewWrite";
 import Filter from "./pages/Filter.jsx";
+import ChatList from "./pages/chat/ChatList";
+import ChatRoom from "./pages/chat/ChatRoom";
 
 const router = createBrowserRouter([
   {
@@ -55,9 +57,9 @@ const router = createBrowserRouter([
       { path: "/change-password", element: <ChangePassword /> },
       { path: "/reset-password", element: <ResetPassword /> },
       { path: "/review/write/:id", element: <ReviewWrite /> },
-
-      // 🔽 여기! 대소문자 맞춰서 /filter 로 사용
       { path: "/filter", element: <Filter /> },
+      { path: "/chat", element: <ChatList  /> },
+      { path: "/chat/:roomId", element: <ChatRoom  /> },
     ],
   },
 ]);
