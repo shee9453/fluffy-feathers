@@ -1,10 +1,14 @@
+// src/pages/Detail.jsx
 import { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabaseClient";
 import "../pages/css/Detail.css";
+import "../pages/css/Booking.css"; // 👈 모달 스타일 재사용용
 
 function Detail() {
   const { id } = useParams(); // carers.id (uuid)
+  const navigate = useNavigate();
+
   const [carer, setCarer] = useState(null);
   const [animalTypes, setAnimalTypes] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -17,6 +21,9 @@ function Detail() {
   const [photoModalImages, setPhotoModalImages] = useState([]);
   const [photoModalIndex, setPhotoModalIndex] = useState(0);
   const [photoModalTitle, setPhotoModalTitle] = useState("");
+
+  // 📌 예약 전 안내 모달 상태
+  const [showBookingDisclaimer, setShowBookingDisclaimer] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -125,7 +132,7 @@ function Detail() {
     const map = {
       cage_only: "새장 안에서만",
       playground: "새장 근처 놀이터/스탠드",
-      near_cage: "새장 근처 플레이스탠드", // 혹시 예전 키가 남아있을 경우
+      near_cage: "새장 근처 플레이스탠드",
       room: "방 하나 자유롭게",
       living_room: "거실에서 자유롭게",
       whole_house: "집 전체 자유롭게",
@@ -198,6 +205,8 @@ function Detail() {
     );
   };
 
+  const minPrice = getMinPrice();
+
   if (loading) {
     return (
       <div className="detail-page detail-state">
@@ -216,8 +225,6 @@ function Detail() {
       </div>
     );
   }
-
-  const minPrice = getMinPrice();
 
   return (
     <div className="detail-page">
@@ -242,22 +249,17 @@ function Detail() {
             <div className="detail-header-main">
               <h1>{carer.name}</h1>
               <p className="detail-location">{fullRegion}</p>
-              {/* {avgRating !== null && (
-                <p className="detail-rating">
-                  ⭐ 평균 {avgRating.toFixed(1)}점 · 리뷰 {reviews.length}개
-                </p>
-              )}
-               */}
+
               <p className="detail-rating">
-              ⭐ 평균 {(avgRating ?? 0).toFixed(1)}점 · 리뷰 {reviews.length}개
-             </p>
+                ⭐ 평균 {(avgRating ?? 0).toFixed(1)}점 · 리뷰 {reviews.length}개
+              </p>
 
               {/* 윙컷/풀윙, 크기 지원 뱃지 */}
               <div className="detail-badge-row">
                 <span className="detail-badge">
                   {carer.accepts_fullwing ? "풀윙도 수용 가능" : "윙컷 앵이만 수용"}
                 </span>
-                <br/>
+                <br />
                 <div className="detail-size-badges">
                   {carer.supports_small && (
                     <span className="detail-badge subtle">소형</span>
@@ -282,8 +284,8 @@ function Detail() {
             </div>
           </header>
 
-          {/* 돌봄 가능 동물 태그 */}
-          {/* {animalNames.length > 0 && (
+          {/* 돌봄 가능 동물 태그 (필요시 다시 노출 가능)
+          {animalNames.length > 0 && (
             <div className="detail-animals">
               {animalNames.map((name) => (
                 <span className="detail-tag" key={name}>
@@ -310,10 +312,7 @@ function Detail() {
                     openPhotoModal(parrotPhotos, 0, "돌보미가 키우는 앵이들")
                   }
                 >
-                  <img
-                    src={parrotPhotos[0]}
-                    alt="돌보미 앵무새 대표 사진"
-                  />
+                  <img src={parrotPhotos[0]} alt="돌보미 앵무새 대표 사진" />
                   {parrotPhotos.length > 1 && (
                     <span className="detail-photo-count">
                       +{parrotPhotos.length - 1}장 더 보기
@@ -330,17 +329,10 @@ function Detail() {
                   type="button"
                   className="detail-photo-thumb"
                   onClick={() =>
-                    openPhotoModal(
-                      spacePhotos,
-                      0,
-                      "위탁 앵이들이 머무를 공간"
-                    )
+                    openPhotoModal(spacePhotos, 0, "위탁 앵이들이 머무를 공간")
                   }
                 >
-                  <img
-                    src={spacePhotos[0]}
-                    alt="위탁 공간 대표 사진"
-                  />
+                  <img src={spacePhotos[0]} alt="위탁 공간 대표 사진" />
                   {spacePhotos.length > 1 && (
                     <span className="detail-photo-count">
                       +{spacePhotos.length - 1}장 더 보기
@@ -561,15 +553,73 @@ function Detail() {
         )}
       </section>
 
+      {/* 📌 돌보미 상세 페이지 하단 안내 문구 */}
+      <section className="detail-box">
+        <h3>예약 전 꼭 확인해주세요</h3>
+        <p className="detail-notice">
+          Fluffy &amp; Feathers는 결제·계약 시스템을 제공하지 않으며,
+          <br />
+          위탁자와 돌보미 간에 발생하는 분쟁에 개입하거나 책임질 수 없습니다.
+          <br />
+          위탁 비용 또한 플랫폼이 결정하지 않고, 양측이 직접 협의해야 합니다.
+          <br />
+          <br />
+          예약 전 돌보미 정보와 조건을 반드시 꼼꼼히 확인해 주세요.
+        </p>
+      </section>
+
       {/* 하단 예약 / 뒤로가기 */}
       <div className="detail-footer">
         <Link to="/list" className="detail-secondary-link">
           ← 목록으로 돌아가기
         </Link>
-        <Link to={`/booking/${carer.id}`} className="reserve-btn">
+        <button
+          type="button"
+          className="reserve-btn"
+          onClick={() => setShowBookingDisclaimer(true)}
+        >
           예약하기
-        </Link>
+        </button>
       </div>
+
+      {/* 📌 예약 전 안내 모달 */}
+      {showBookingDisclaimer && (
+        <div className="booking-modal-backdrop">
+          <div className="booking-modal">
+            <h3 className="booking-modal-title">📌 예약 전에 꼭 확인해주세요</h3>
+            <p className="booking-modal-text">
+              Fluffy &amp; Feathers는 <br /><b>결제·계약</b> 시스템을 제공하지 않으며,
+              <br />
+              위탁자와 돌보미 간에 발생하는 <br /><b>분쟁</b>에 개입하거나 책임질 수 없습니다.
+              <br />
+              <b>위탁 비용</b> 또한 플랫폼이 결정하지 않고,<br />양측이 직접 협의해야 합니다.
+              <br />
+              <br />
+              예약 전 돌보미 정보와 조건을 반드시 꼼꼼히 확인해 주세요.
+            </p>
+
+            <div className="booking-modal-actions">
+              <button
+                type="button"
+                className="secondary-btn booking-modal-btn"
+                onClick={() => setShowBookingDisclaimer(false)}
+              >
+                취소
+              </button>
+              <button
+                type="button"
+                className="primary-btn booking-modal-btn"
+                onClick={() => {
+                  setShowBookingDisclaimer(false);
+                  navigate(`/booking/${carer.id}`);
+                }}
+              >
+                동의하고 예약 진행하기
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* 📸 이미지 모달 */}
       {photoModalOpen && (

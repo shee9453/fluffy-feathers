@@ -445,8 +445,7 @@ function BookingEdit() {
             </button>
 
             <p className="booking-notice">
-              현재는 포트폴리오용 데모 서비스이며, 결제 및 자동 매칭은 포함되어
-              있지 않습니다.
+              결제 및 자동 매칭은 포함되어 있지 않습니다.
             </p>
           </div>
         </div>

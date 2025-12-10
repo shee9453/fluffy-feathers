@@ -6,55 +6,52 @@ import { useAuth } from "../../contexts/AuthContext";
 import "./css/ChatRoom.css";
 
 function ChatRoom() {
-  // 라우트 파라미터 이름이 id / roomId / chatRoomId 중 무엇이든 대응
   const params = useParams();
   const roomId = params.id || params.roomId || params.chatRoomId;
 
   const { user, authLoading } = useAuth();
 
-  const [room, setRoom] = useState(null);       // chat_rooms 정보
-  const [messages, setMessages] = useState([]); // chat_messages 목록
+  const [room, setRoom] = useState(null);
+  const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(true);
   const [errorMsg, setErrorMsg] = useState("");
+
+  const [counterpart, setCounterpart] = useState({
+    name: "",
+    role: "",
+    avatarUrl: null,
+  });
+  const [counterpartLastReadId, setCounterpartLastReadId] = useState(null);
+
   const bottomRef = useRef(null);
 
-  // 1) 채팅방 정보 + 초기 메시지 로딩
+  // 1) 채팅방 정보 + 메시지 + 상대 정보 + 상대 읽음 정보 로딩
   useEffect(() => {
-    // 아직 로그인 상태 파악 중이면 아무 것도 하지 않음
     if (authLoading) return;
 
-    // roomId나 user가 아예 없으면 로딩만 계속 돌지 않도록 종료
     if (!roomId || !user) {
       setLoading(false);
       return;
     }
 
-    const loadRoomAndMessages = async () => {
+    const loadRoom = async () => {
       setLoading(true);
-      setErrorMsg("");
 
-      // 1-1. 채팅방 정보 조회
       const { data: roomData, error: roomError } = await supabase
         .from("chat_rooms")
         .select("*")
         .eq("id", roomId)
         .maybeSingle();
 
-      if (roomError) {
-        console.error("채팅방 불러오기 오류:", roomError);
-        setErrorMsg("채팅방 정보를 불러오는 중 오류가 발생했습니다.");
+      if (roomError || !roomData) {
+        console.error(roomError);
+        setErrorMsg("채팅방 정보를 불러오지 못했습니다.");
         setLoading(false);
         return;
       }
 
-      if (!roomData) {
-        setErrorMsg("존재하지 않는 채팅방입니다.");
-        setLoading(false);
-        return;
-      }
-
-      // 1-2. 권한 체크: 이 방의 user_id 또는 carer_id 인 경우만 입장 가능
+      // 권한 체크
       if (roomData.user_id !== user.id && roomData.carer_id !== user.id) {
         setErrorMsg("이 채팅방에 참여할 권한이 없습니다.");
         setLoading(false);
@@ -63,7 +60,63 @@ function ChatRoom() {
 
       setRoom(roomData);
 
-      // 1-3. 메시지 로딩 (room_id 기준)
+      // ✅ 나와 상대 구분 공통 로직
+      const amApplicant = roomData.user_id === user.id; // 내가 위탁자?
+      const counterpartUserId = amApplicant ? roomData.carer_id : roomData.user_id;
+      const counterpartRole = amApplicant ? "돌보미" : "위탁자";
+
+      try {
+        // carers, profiles 둘 다 한 번에 조회
+        const [{ data: carerRow, error: carerError }, { data: profileRow, error: profileError }] =
+          await Promise.all([
+            supabase
+              .from("carers")
+              .select("name, avatar_url")
+              .eq("user_id", counterpartUserId)
+              .maybeSingle(),
+            supabase
+              .from("profiles")
+              .select("name, avatar_url")
+              .eq("user_id", counterpartUserId)
+              .maybeSingle(),
+          ]);
+
+        if (carerError) console.error("carer 정보 로딩 오류:", carerError);
+        if (profileError) console.error("profile 정보 로딩 오류:", profileError);
+
+        const name =
+          carerRow?.name ||
+          profileRow?.name ||
+          (counterpartRole === "돌보미" ? "돌보미" : "위탁자");
+
+        const avatarUrl = carerRow?.avatar_url || profileRow?.avatar_url || null;
+
+        setCounterpart({
+          name,
+          role: counterpartRole,
+          avatarUrl,
+        });
+
+        // 🔹 상대방의 읽음 정보 (chat_reads) 로딩
+        if (counterpartUserId) {
+          const { data: readRow, error: readError } = await supabase
+            .from("chat_reads")
+            .select("last_read_message_id")
+            .eq("room_id", roomData.id)
+            .eq("user_id", counterpartUserId)
+            .maybeSingle();
+
+          if (readError) {
+            console.error("상대 읽음 정보 로딩 오류:", readError);
+          } else if (readRow) {
+            setCounterpartLastReadId(readRow.last_read_message_id ?? null);
+          }
+        }
+      } catch (e) {
+        console.error("상대 정보/읽음 정보 로딩 중 예외:", e);
+      }
+
+      // 🔹 메시지 로딩
       const { data: msgData, error: msgError } = await supabase
         .from("chat_messages")
         .select("*")
@@ -71,8 +124,8 @@ function ChatRoom() {
         .order("created_at", { ascending: true });
 
       if (msgError) {
-        console.error("메시지 불러오기 오류:", msgError);
-        setErrorMsg("채팅 메시지를 불러오는 중 오류가 발생했습니다.");
+        console.error(msgError);
+        setErrorMsg("메시지를 불러오는 중 오류가 발생했습니다.");
         setLoading(false);
         return;
       }
@@ -81,15 +134,15 @@ function ChatRoom() {
       setLoading(false);
     };
 
-    loadRoomAndMessages();
+    loadRoom();
   }, [roomId, user, authLoading]);
 
-  // 2) Supabase Realtime 구독 (room_id 기준)
+  // 2) 실시간 메시지 구독
   useEffect(() => {
     if (!room || !user) return;
 
     const channel = supabase
-      .channel(`chat_messages-room-${room.id}`)
+      .channel(`chat-room-${room.id}`)
       .on(
         "postgres_changes",
         {
@@ -110,21 +163,72 @@ function ChatRoom() {
     };
   }, [room, user]);
 
-  // 3) 스크롤 항상 아래로
+  // 2-1) 실시간 읽음 정보 구독 (상대가 이 방에서 읽음 업데이트할 때)
   useEffect(() => {
-    if (bottomRef.current) {
-      bottomRef.current.scrollIntoView({ behavior: "smooth" });
-    }
+    if (!room || !user) return;
+
+    const counterpartUserId =
+      room.user_id === user.id ? room.carer_id : room.user_id;
+
+    const channel = supabase
+      .channel(`chat-reads-${room.id}-${counterpartUserId}`)
+      .on(
+        "postgres_changes",
+        {
+          event: "UPDATE",
+          schema: "public",
+          table: "chat_reads",
+          filter: `room_id=eq.${room.id}`,
+        },
+        (payload) => {
+          const newRow = payload.new;
+          if (newRow.user_id === counterpartUserId) {
+            setCounterpartLastReadId(newRow.last_read_message_id ?? null);
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [room, user]);
+
+  // 3) 내가 이 방을 보고 있다는 읽음 처리 (내 user_id 기준)
+  useEffect(() => {
+    if (!room || !user) return;
+    if (messages.length === 0) return;
+
+    const lastMsg = messages[messages.length - 1];
+    if (!lastMsg?.id) return;
+
+    supabase
+      .from("chat_reads")
+      .upsert(
+        {
+          room_id: room.id,
+          user_id: user.id,
+          last_read_message_id: lastMsg.id,
+          updated_at: new Date().toISOString(),
+        },
+        { onConflict: "room_id,user_id" }
+      )
+      .then(({ error }) => {
+        if (error) console.error("읽음 처리 실패:", error);
+        else console.log("읽음 처리 성공:", lastMsg.id);
+      });
+  }, [messages, room, user]);
+
+  // 4) 스크롤 최신 메시지로 이동
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages.length]);
 
-  // 4) 메시지 전송
+  // 5) 메시지 전송
   const handleSend = async () => {
     if (!input.trim()) return;
-    if (!user) {
-      alert("로그인 후 이용해주세요.");
-      return;
-    }
-    if (!room) {
+
+    if (!room || !user) {
       alert("채팅방 정보를 불러오지 못했습니다.");
       return;
     }
@@ -141,80 +245,82 @@ function ChatRoom() {
       return;
     }
 
-    // ❌ setMessages(...) 절대 넣지 않기 (중복 발생 원인)
-    setInput(""); 
+    setInput("");
   };
 
-
-
-  // 5) 화면 분기 처리
-
-  // 아직 로그인 상태 파악 중
-  if (authLoading) {
-    return (
-      <div className="chat-page chat-state">
-        <p className="chat-state-text">로그인 상태를 확인하는 중입니다...</p>
-      </div>
+  // 👀 상대가 읽은 "내 마지막 메시지" id 계산
+  let myLastReadMessageId = null;
+  if (counterpartLastReadId && messages.length > 0 && user) {
+    const myReadMessages = messages.filter(
+      (m) => m.sender_id === user.id && m.id <= counterpartLastReadId
     );
+    if (myReadMessages.length > 0) {
+      myLastReadMessageId = myReadMessages[myReadMessages.length - 1].id;
+    }
   }
 
-  // 로그인 안 된 경우
-  if (!user) {
+  // --- 화면 분기 ---
+  if (authLoading)
     return (
       <div className="chat-page chat-state">
-        <p className="chat-state-text">채팅은 로그인 후 이용할 수 있어요.</p>
+        <p className="chat-state-text">로그인 상태 확인 중…</p>
       </div>
     );
-  }
 
-  // URL이 잘못된 경우 (roomId 없음)
-  if (!roomId) {
+  if (!user)
     return (
       <div className="chat-page chat-state">
-        <p className="chat-state-text chat-state-error">
-          유효하지 않은 채팅방 주소입니다.
-        </p>
+        <p className="chat-state-text">로그인 후 채팅 이용 가능</p>
       </div>
     );
-  }
 
-  // 방/메시지 로딩 중
-  if (loading) {
+  if (loading)
     return (
       <div className="chat-page chat-state">
-        <p className="chat-state-text">채팅을 불러오는 중입니다...</p>
+        <p className="chat-state-text">채팅을 불러오는 중...</p>
       </div>
     );
-  }
 
-  // 로딩은 끝났는데 에러가 있는 경우
-  if (errorMsg) {
+  if (errorMsg)
     return (
       <div className="chat-page chat-state">
         <p className="chat-state-text chat-state-error">{errorMsg}</p>
       </div>
     );
-  }
 
-  // 정상 렌더링
   return (
     <div className="chat-page">
-      {/* 상단 헤더 */}
+      {/* 🔹 상단 상대 정보 헤더 */}
       <header className="chat-header">
-        <h1>채팅</h1>
-        <p className="chat-sub">예약에 대해 돌보미와 대화해보세요.</p>
+        <div className="chat-header-avatar">
+          {counterpart.avatarUrl ? (
+            <img
+              src={counterpart.avatarUrl}
+              alt={counterpart.name}
+              className="chat-header-avatar-img"
+            />
+          ) : (
+            <span className="chat-header-avatar-text">
+              {counterpart.name ? counterpart.name[0] : "?"}
+            </span>
+          )}
+        </div>
+        <div className="chat-header-info">
+          <div className="chat-header-name">
+            {counterpart.name || "알 수 없는 사용자"}
+          </div>
+          <div className="chat-header-role">
+            {counterpart.role || ""}
+          </div>
+        </div>
       </header>
 
-      {/* 메시지 영역 */}
       <div className="chat-body">
-        {messages.length === 0 && (
-          <div className="chat-empty">
-            아직 메시지가 없습니다. 첫 메시지를 보내보세요!
-          </div>
-        )}
-
         {messages.map((m) => {
           const isMe = m.sender_id === user.id;
+          const isLastReadByCounterpart =
+            isMe && myLastReadMessageId === m.id;
+
           return (
             <div
               key={m.id}
@@ -222,34 +328,34 @@ function ChatRoom() {
             >
               <div className="chat-bubble">
                 <p className="chat-text">{m.message}</p>
-                <span className="chat-time">
-                  {new Date(m.created_at).toLocaleTimeString("ko-KR", {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}
-                </span>
+                <div className="chat-meta">
+                  <span className="chat-time">
+                    {new Date(m.created_at).toLocaleTimeString("ko-KR", {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </span>
+                  {isLastReadByCounterpart && (
+                    <span className="chat-read">읽음</span>
+                  )}
+                </div>
               </div>
             </div>
           );
         })}
+
         <div ref={bottomRef} />
       </div>
 
-      {/* 입력 영역 */}
       <footer className="chat-input-bar">
         <input
           className="chat-input"
-          placeholder="메시지를 입력하세요..."
+          placeholder="메시지 입력..."
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" && !e.shiftKey) {
-              e.preventDefault();
-              handleSend();
-            }
-          }}
+          onKeyDown={(e) => e.key === "Enter" && handleSend()}
         />
-        <button className="chat-send-btn" type="button" onClick={handleSend}>
+        <button className="chat-send-btn" onClick={handleSend}>
           보내기
         </button>
       </footer>

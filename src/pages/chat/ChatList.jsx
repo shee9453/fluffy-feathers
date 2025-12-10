@@ -9,126 +9,165 @@ function ChatList() {
   const { user } = useAuth();
   const [rooms, setRooms] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [loadError, setLoadError] = useState("");
+
+  const loadRooms = async () => {
+    if (!user) return;
+
+    setLoading(true);
+
+    const { data: roomRows, error: roomError } = await supabase
+      .from("chat_rooms")
+      .select("*")
+      .or(`user_id.eq.${user.id},carer_id.eq.${user.id}`)
+      .order("last_message_at", { ascending: false });
+
+    if (roomError) {
+      console.error("chat_rooms 로딩 오류:", roomError);
+      setRooms([]);
+      setLoading(false);
+      return;
+    }
+
+    const roomsWithMeta = await Promise.all(
+      (roomRows || []).map(async (room) => {
+        const { data: lastMsg } = await supabase
+          .from("chat_messages")
+          .select("id, message, sender_id, created_at")
+          .eq("room_id", room.id)
+          .order("created_at", { ascending: false })
+          .limit(1)
+          .maybeSingle();
+
+        const { data: readInfo } = await supabase
+          .from("chat_reads")
+          .select("last_read_message_id")
+          .eq("room_id", room.id)
+          .eq("user_id", user.id)
+          .maybeSingle();
+
+        // 상대 이름 가져오기
+        let counterpartName = "";
+        let counterpartRole = "";
+
+        if (room.user_id === user.id) {
+          counterpartRole = "돌보미";
+          const { data: carerRow } = await supabase
+            .from("carers")
+            .select("name")
+            .eq("user_id", room.carer_id)
+            .maybeSingle();
+          counterpartName = carerRow?.name || "돌보미";
+        } else {
+          counterpartRole = "위탁자";
+          const { data: profileRow } = await supabase
+            .from("profiles")
+            .select("name")
+            .eq("user_id", room.user_id)
+            .maybeSingle();
+          counterpartName = profileRow?.name || "위탁자";
+        }
+
+        const counterpartLabel = `${counterpartName} (${counterpartRole})와의 대화`;
+
+        return {
+          ...room,
+          _lastMsg: lastMsg || null,
+          _readInfo: readInfo || null,
+          _counterLabel: counterpartLabel,
+        };
+      })
+    );
+
+    setRooms(roomsWithMeta);
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    if (user) loadRooms();
+  }, [user]);
 
   useEffect(() => {
     if (!user) return;
 
-    const loadRooms = async () => {
-      setLoading(true);
-      setLoadError("");
+    const channel = supabase
+      .channel(`chat-list-${user.id}`)
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "chat_messages" },
+        async (payload) => {
+          const newMsg = payload.new;
 
-      const { data, error } = await supabase
-        .from("chat_rooms")
-        .select("*")
-        .or(`user_id.eq.${user.id},carer_id.eq.${user.id}`)
-        .order("last_message_at", { ascending: false });
+          const { data: roomData } = await supabase
+            .from("chat_rooms")
+            .select("user_id, carer_id")
+            .eq("id", newMsg.room_id)
+            .maybeSingle();
 
-      if (error) {
-        console.error(error);
-        setLoadError("채팅방을 불러오는 중 오류가 발생했습니다.");
-        setLoading(false);
-        return;
-      }
+          if (!roomData) return;
 
-      setRooms(data || []);
-      setLoading(false);
-    };
+          const amIParticipant =
+            roomData.user_id === user.id || roomData.carer_id === user.id;
 
-    loadRooms();
+          if (amIParticipant) loadRooms();
+        }
+      )
+      .subscribe();
+
+    return () => supabase.removeChannel(channel);
   }, [user]);
 
-  if (!user) {
-    return (
-      <div className="detail-page chat-list-page">
-        <p className="chat-list-state-text">로그인 후 채팅을 이용할 수 있어요.</p>
-      </div>
-    );
-  }
+  const isUnread = (room) => {
+    const lastMsg = room._lastMsg;
+    const readInfo = room._readInfo;
 
-  if (loading) {
-    return (
-      <div className="detail-page chat-list-page">
-        <p className="chat-list-state-text">채팅방을 불러오는 중입니다...</p>
-      </div>
-    );
-  }
+    if (!lastMsg) return false;
+    if (lastMsg.sender_id === user.id) return false;
 
-  if (loadError) {
-    return (
-      <div className="detail-page chat-list-page">
-        <p className="chat-list-state-text chat-list-state-error">
-          {loadError}
-        </p>
-      </div>
-    );
-  }
+    const lastReadId = readInfo?.last_read_message_id ?? 0;
+    return lastMsg.id > lastReadId;
+  };
+
+  const formatTime = (dateStr) => {
+    if (!dateStr) return "";
+    const date = new Date(dateStr);
+    return date.toLocaleTimeString("ko-KR", { hour: "2-digit", minute: "2-digit" });
+  };
+
+  if (!user) return <p className="chat-list-state-text">로그인 후 이용해주세요.</p>;
+  if (loading) return <p className="chat-list-state-text">채팅방 불러오는 중…</p>;
 
   return (
     <div className="detail-page chat-list-page">
-      <header className="chat-list-header">
-        <h1>메시지</h1>
-        <p className="chat-list-sub">
-          돌보미와 1:1로 대화할 수 있어요.
-        </p>
-      </header>
+      <ul className="chat-list">
+        {rooms.map((room) => {
+          const lastMsg = room._lastMsg;
+          const unread = isUnread(room);
+          const lastTime = lastMsg ? formatTime(lastMsg.created_at) : "";
 
-      {rooms.length === 0 ? (
-        <div className="detail-box chat-list-empty">
-          <p>아직 시작된 대화가 없어요.</p>
-          <p className="chat-list-empty-sub">
-            돌보미 상세 페이지에서 <strong>채팅하기</strong> 버튼을 눌러
-            대화를 시작해보세요.
-          </p>
-        </div>
-      ) : (
-        <div className="detail-box chat-list-box">
-          <ul className="chat-list">
-            {rooms.map((room) => {
-              const isUser = room.user_id === user.id;
-              const counterpartLabel = isUser
-                ? "돌보미와의 대화"
-                : "위탁자와의 대화";
+          return (
+            <li key={room.id}>
+              <Link to={`/chat/${room.id}`} className="chat-list-item">
+                <div className="chat-avatar">💬</div>
 
-              const lastTime = room.last_message_at
-                ? new Date(room.last_message_at).toLocaleString("ko-KR", {
-                    month: "short",
-                    day: "numeric",
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })
-                : "";
+                <div className="chat-list-main">
+                  <div className="chat-list-top-row">
+                    <span className="chat-list-name">{room._counterLabel}</span>
 
-              const initials = counterpartLabel[0];
+                    {/* 🔥 마지막 메시지 시간 표시 */}
+                    <span className="chat-list-time">{lastTime}</span>
 
-              return (
-                <li key={room.id}>
-                  <Link to={`/chat/${room.id}`} className="chat-list-item">
-                    <div className="chat-avatar">
-                      <span className="chat-avatar-text">{initials}</span>
-                    </div>
-                    <div className="chat-list-main">
-                      <div className="chat-list-top-row">
-                        <span className="chat-list-name">
-                          {counterpartLabel}
-                        </span>
-                        {lastTime && (
-                          <span className="chat-list-time">{lastTime}</span>
-                        )}
-                      </div>
-                      <div className="chat-list-bottom-row">
-                        <span className="chat-list-preview">
-                          {room.last_message || "새 대화를 시작해보세요."}
-                        </span>
-                      </div>
-                    </div>
-                  </Link>
-                </li>
-              );
-            })}
-          </ul>
-        </div>
-      )}
+                    {unread && <span className="chat-unread-dot"></span>}
+                  </div>
+
+                  <span className="chat-list-preview">
+                    {lastMsg?.message || "새 대화를 시작해보세요."}
+                  </span>
+                </div>
+              </Link>
+            </li>
+          );
+        })}
+      </ul>
     </div>
   );
 }

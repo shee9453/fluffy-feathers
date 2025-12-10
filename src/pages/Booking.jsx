@@ -266,17 +266,6 @@ function Booking() {
                 onChange={(e) => setEndDate(e.target.value)}
               />
             </div>
-
-            {/* <div className="form-group">
-              <label>돌봄 시작 시간</label>
-              <input
-                className="booking-input"
-                type="time"
-                required
-                value={time}
-                onChange={(e) => setTime(e.target.value)}
-              />
-            </div> */}
           </div>
 
           {/* 2. 반려동물 정보 + 옵션 */}
@@ -419,8 +408,7 @@ function Booking() {
             </button>
 
             <p className="booking-notice">
-              현재는 포트폴리오용 데모 서비스이며, 결제 및 자동 매칭은 포함되어
-              있지 않습니다.
+             결제 및 자동 매칭은 포함되어 있지 않습니다.
             </p>
           </div>
         </div>
