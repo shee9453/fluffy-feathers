@@ -241,3 +241,27 @@
   padding-left: 1.2rem;
   margin: 0 0 0.6rem;
 }
+.board-markdown-body h1,
+.board-markdown-body h2,
+.board-markdown-body h3 {
+  margin: 1.2rem 0 0.6rem;
+  font-weight: 600;
+}
+
+.board-markdown-body p {
+  margin: 0.4rem 0;
+  line-height: 1.6;
+  white-space: pre-wrap; /* 줄바꿈 유지 */
+}
+
+.board-markdown-body ul,
+.board-markdown-body ol {
+  margin: 0.4rem 0 0.4rem 1.2rem;
+}
+
+.board-markdown-body blockquote {
+  margin: 0.6rem 0;
+  padding-left: 0.8rem;
+  border-left: 3px solid #ddd;
+  color: #555;
+}

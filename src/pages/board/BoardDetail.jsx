@@ -5,6 +5,9 @@ import { supabase } from "../../lib/supabaseClient";
 import { useAuth } from "../../contexts/AuthContext";
 import "./css/BoardDetail.css";
 
+// 마크다운 렌더링
+import ReactMarkdown from "react-markdown";
+
 function BoardDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -28,7 +31,6 @@ function BoardDetail() {
       setLoadingPost(true);
       setErrorMsg("");
 
-      // 1) 게시글 데이터 가져오기
       const { data, error } = await supabase
         .from("posts")
         .select("*, categories(*)")
@@ -50,7 +52,7 @@ function BoardDetail() {
 
       setPost(data);
 
-      // 2) 작성자 이름 조회 (profiles.user_id 로 조회)
+      // 작성자 이름
       if (data.user_id) {
         const { data: profile, error: profileError } = await supabase
           .from("profiles")
@@ -217,10 +219,12 @@ function BoardDetail() {
         </span>
       </header>
 
-      {/* 본문 - Toast UI Viewer 로 마크다운 렌더링 */}
+      {/* 본문 - ReactMarkdown으로 마크다운/텍스트 렌더링 */}
       <section className="detail-box board-detail-content-box">
-        <div className="post-viewer-wrapper">
-          <Viewer initialValue={post.content || ""} />
+        {/* 여기에 className 주고 */}
+        <div className="post-viewer-wrapper board-markdown-body">
+          {/* ReactMarkdown에는 className 안 넘김 (v9 규칙) */}
+          <ReactMarkdown>{post.content || ""}</ReactMarkdown>
         </div>
       </section>
 
